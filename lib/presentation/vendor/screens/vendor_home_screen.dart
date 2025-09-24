@@ -141,7 +141,7 @@ class VendorHomeScreen extends StatelessWidget {
                           title: 'Discounts',
                           subtitle: 'Manage promotions',
                           onTap: () {
-                            // TODO: Navigate to discount management
+                            Navigator.pushNamed(context, '/vendor/discounts');
                           },
                         ),
                       ],

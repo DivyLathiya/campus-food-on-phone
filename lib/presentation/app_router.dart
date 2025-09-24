@@ -16,6 +16,7 @@ import 'package:campus_food_app/presentation/student/screens/order_screen.dart';
 import 'package:campus_food_app/presentation/student/screens/pickup_slot_screen.dart';
 import 'package:campus_food_app/presentation/student/screens/order_details_screen.dart';
 import 'package:campus_food_app/presentation/student/screens/feedback_screen.dart';
+import 'package:campus_food_app/presentation/vendor/screens/discount_management_screen.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -51,6 +52,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => FeedbackScreen(vendorId: vendorId));
       case '/vendor/home':
         return MaterialPageRoute(builder: (_) => const vendor.VendorHomeScreen());
+      case '/vendor/discounts':
+        return MaterialPageRoute(builder: (_) => const DiscountManagementScreen());
       case '/admin/home':
         return MaterialPageRoute(builder: (_) => const admin.AdminHomeScreen());
       default:

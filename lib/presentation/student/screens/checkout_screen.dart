@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:campus_food_app/presentation/auth/bloc/auth_bloc.dart';
 import 'package:campus_food_app/presentation/student/bloc/order_bloc.dart';
 import 'package:campus_food_app/presentation/student/bloc/wallet_bloc.dart';
+import 'package:campus_food_app/presentation/vendor/bloc/discount_bloc.dart';
+import 'package:campus_food_app/domain/entities/discount_entity.dart';
 import 'package:campus_food_app/core/utils/app_theme.dart';
 import 'package:intl/intl.dart';
 
@@ -69,7 +71,32 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           if (orderState is! VendorMenuLoaded) {
             return const Center(child: CircularProgressIndicator());
           }
-          final discountedTotal = orderState.totalAmount * 0.9; // Applying a 10% discount for demo
+          // Calculate dynamic discount
+          double discountAmount = 0.0;
+          DiscountEntity? appliedDiscount;
+          
+          // Get the best available discount for this vendor
+          if (orderState.cartItems.isNotEmpty) {
+            final vendorId = orderState.cartItems.first.menuItem.vendorId;
+            final discountState = context.read<DiscountBloc>().state;
+            
+            if (discountState is DiscountLoaded) {
+              final applicableDiscounts = discountState.discounts.where((discount) => 
+                discount.vendorId == vendorId && discount.isValid).toList();
+              
+              if (applicableDiscounts.isNotEmpty) {
+                // Find the best discount (highest value)
+                appliedDiscount = applicableDiscounts.reduce((current, next) {
+                  final currentDiscount = current.calculateDiscount(orderState.totalAmount);
+                  final nextDiscount = next.calculateDiscount(orderState.totalAmount);
+                  return currentDiscount > nextDiscount ? current : next;
+                });
+                discountAmount = appliedDiscount.calculateDiscount(orderState.totalAmount);
+              }
+            }
+          }
+          
+          final discountedTotal = orderState.totalAmount - discountAmount;
           return BlocBuilder<WalletBloc, WalletState>(
             builder: (context, walletState) {
               if (walletState is! WalletBalanceLoaded) {
@@ -105,9 +132,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               title: const Text( 'Subtotal'),
                               trailing: Text('₹${orderState.totalAmount.toStringAsFixed(2)}'),
                             ),
+                            if (discountAmount > 0) ListTile(
+                              title: Text('Discount ${appliedDiscount?.type == 'percentage' ? '(${appliedDiscount?.value.toStringAsFixed(0)}%)' : ''}'),
+                              subtitle: appliedDiscount != null ? Text(appliedDiscount.description) : null,
+                              trailing: Text('- ₹${discountAmount.toStringAsFixed(2)}', style: const TextStyle(color: AppTheme.successColor)),
+                            ) else
                             ListTile(
-                              title: const Text('Discount (10%)'),
-                              trailing: Text('- ₹${(orderState.totalAmount - discountedTotal).toStringAsFixed(2)}', style: const TextStyle(color: AppTheme.successColor)),
+                              title: const Text('Discount'),
+                              trailing: const Text('No discount available', style: TextStyle(color: Colors.grey)),
                             ),
                             const Divider(),
                             ListTile(
