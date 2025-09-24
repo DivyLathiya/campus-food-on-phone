@@ -94,7 +94,7 @@ class StudentHomeScreen extends StatelessWidget {
                         title: 'Order History',
                         subtitle: 'View past orders',
                         onTap: () {
-                          // TODO: Navigate to order history
+                          Navigator.pushNamed(context, '/student/order-history');
                         },
                       ),
                       _buildQuickActionCard(
@@ -119,12 +119,12 @@ class StudentHomeScreen extends StatelessWidget {
   }
 
   Widget _buildQuickActionCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
+      BuildContext context, {
+        required IconData icon,
+        required String title,
+        required String subtitle,
+        required VoidCallback onTap,
+      }) {
     return Card(
       child: InkWell(
         onTap: onTap,

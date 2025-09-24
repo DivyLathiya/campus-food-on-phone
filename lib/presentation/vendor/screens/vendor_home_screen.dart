@@ -78,7 +78,7 @@ class VendorHomeScreen extends StatelessWidget {
                       Expanded(
                         child: _buildStatCard(
                           'Today\'s Revenue',
-                          '\$245.50',
+                          '₹2245.00',
                           Icons.attach_money,
                           AppTheme.successColor,
                         ),

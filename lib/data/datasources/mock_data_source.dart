@@ -9,49 +9,49 @@ import 'package:campus_food_app/core/utils/app_constants.dart';
 class MockDataSource {
   // Mock Users
   static final List<UserModel> users = [
-    UserModel(
+    const UserModel(
       userId: 'user_1',
       email: 'student@campus.edu',
       campusId: 'STU001',
       role: AppConstants.roleStudent,
-      name: 'John Student',
-      walletBalance: 50.00,
+      name: 'Jash',
+      walletBalance: 4150.00,
       phoneNumber: '+1234567890',
     ),
-    UserModel(
+    const UserModel(
       userId: 'user_2',
       email: 'vendor1@campus.edu',
       campusId: 'VEN001',
       role: AppConstants.roleVendor,
-      name: 'Pizza Palace Owner',
-      walletBalance: 1000.00,
+      name: 'Foodies Owner',
+      walletBalance: 83000.00,
       phoneNumber: '+1234567891',
     ),
-    UserModel(
+    const UserModel(
       userId: 'user_3',
       email: 'admin@campus.edu',
       campusId: 'ADM001',
       role: AppConstants.roleAdmin,
-      name: 'Campus Admin',
+      name: 'Admin',
       walletBalance: 0.00,
       phoneNumber: '+1234567892',
     ),
-    UserModel(
+    const UserModel(
       userId: 'user_4',
       email: 'student2@campus.edu',
       campusId: 'STU002',
       role: AppConstants.roleStudent,
-      name: 'Jane Student',
-      walletBalance: 75.50,
+      name: 'Divy',
+      walletBalance: 6266.50,
       phoneNumber: '+1234567893',
     ),
   ];
 
   // Mock Vendors
   static final List<VendorModel> vendors = [
-    VendorModel(
+    const VendorModel(
       vendorId: 'vendor_1',
-      name: 'Pizza Palace',
+      name: 'Foodies',
       description: 'Fresh pizzas made with love',
       imageUrl: 'assets/images/pizza_palace.jpg',
       status: AppConstants.vendorOpen,
@@ -61,9 +61,9 @@ class MockDataSource {
       phoneNumber: '+1234567890',
       ownerId: 'user_2',
     ),
-    VendorModel(
+    const VendorModel(
       vendorId: 'vendor_2',
-      name: 'Burger Barn',
+      name: 'Gurukrupa Snacks',
       description: 'Juicy burgers and fries',
       imageUrl: 'assets/images/burger_barn.jpg',
       status: AppConstants.vendorOpen,
@@ -73,9 +73,9 @@ class MockDataSource {
       phoneNumber: '+1234567891',
       ownerId: 'user_5',
     ),
-    VendorModel(
+    const VendorModel(
       vendorId: 'vendor_3',
-      name: 'Sushi Station',
+      name: 'Soda Shop',
       description: 'Fresh Japanese cuisine',
       imageUrl: 'assets/images/sushi_station.jpg',
       status: AppConstants.vendorPendingApproval,
@@ -85,10 +85,10 @@ class MockDataSource {
       phoneNumber: '+1234567892',
       ownerId: 'user_6',
     ),
-    VendorModel(
+    const VendorModel(
       vendorId: 'vendor_4',
-      name: 'Taco Time',
-      description: 'Authentic Mexican tacos',
+      name: 'Ballu Canteen',
+      description: 'Authentic Indian snacks',
       imageUrl: 'assets/images/taco_time.jpg',
       status: AppConstants.vendorClosed,
       rating: 4.0,
@@ -101,98 +101,98 @@ class MockDataSource {
 
   // Mock Menu Items
   static final List<MenuItemModel> menuItems = [
-    MenuItemModel(
+    const MenuItemModel(
       menuItemId: 'menu_1',
       vendorId: 'vendor_1',
       name: 'Margherita Pizza',
       description: 'Classic pizza with tomato sauce and mozzarella',
-      price: 12.99,
+      price: 1078.17,
       imageUrl: 'assets/images/margherita_pizza.jpg',
       isAvailable: true,
       category: 'Pizza',
       preparationTime: 15,
       tags: ['vegetarian', 'classic'],
     ),
-    MenuItemModel(
+    const MenuItemModel(
       menuItemId: 'menu_2',
       vendorId: 'vendor_1',
-      name: 'Pepperoni Pizza',
-      description: 'Pizza with pepperoni and mozzarella',
-      price: 14.99,
-      imageUrl: 'assets/images/pepperoni_pizza.jpg',
+      name: 'Veggie Pizza',
+      description: 'Pizza with a variety of fresh vegetables',
+      price: 1161.17,
+      imageUrl: 'assets/images/veggie_pizza.jpg',
       isAvailable: true,
       category: 'Pizza',
       preparationTime: 15,
-      tags: ['popular', 'meat'],
+      tags: ['vegetarian', 'healthy'],
     ),
-    MenuItemModel(
+    const MenuItemModel(
       menuItemId: 'menu_3',
       vendorId: 'vendor_2',
-      name: 'Classic Burger',
-      description: 'Beef burger with lettuce, tomato, and cheese',
-      price: 8.99,
-      imageUrl: 'assets/images/classic_burger.jpg',
+      name: 'Veggie Burger',
+      description: 'A delicious vegetable patty burger',
+      price: 663.17,
+      imageUrl: 'assets/images/veggie_burger.jpg',
       isAvailable: true,
       category: 'Burgers',
       preparationTime: 10,
-      tags: ['popular', 'beef'],
+      tags: ['vegetarian', 'popular'],
     ),
-    MenuItemModel(
+    const MenuItemModel(
       menuItemId: 'menu_4',
       vendorId: 'vendor_2',
-      name: 'Cheeseburger',
-      description: 'Beef burger with extra cheese',
-      price: 9.99,
-      imageUrl: 'assets/images/cheeseburger.jpg',
+      name: 'Paneer Burger',
+      description: 'A burger with a crispy paneer patty',
+      price: 746.17,
+      imageUrl: 'assets/images/paneer_burger.jpg',
       isAvailable: true,
       category: 'Burgers',
-      preparationTime: 10,
-      tags: ['cheese', 'beef'],
+      preparationTime: 12,
+      tags: ['vegetarian', 'paneer'],
     ),
-    MenuItemModel(
+    const MenuItemModel(
       menuItemId: 'menu_5',
       vendorId: 'vendor_3',
-      name: 'California Roll',
-      description: 'Crab, avocado, and cucumber roll',
-      price: 10.99,
-      imageUrl: 'assets/images/california_roll.jpg',
-      isAvailable: false,
+      name: 'Veg Sushi Roll',
+      description: 'Avocado, cucumber, and carrot sushi roll',
+      price: 829.17,
+      imageUrl: 'assets/images/veg_sushi.jpg',
+      isAvailable: true,
       category: 'Sushi',
       preparationTime: 20,
-      tags: ['sushi', 'raw fish'],
+      tags: ['vegetarian', 'sushi'],
     ),
-    MenuItemModel(
+    const MenuItemModel(
       menuItemId: 'menu_6',
       vendorId: 'vendor_4',
-      name: 'Beef Taco',
-      description: 'Ground beef taco with fresh toppings',
-      price: 6.99,
-      imageUrl: 'assets/images/beef_taco.jpg',
+      name: 'Paneer Taco',
+      description: 'A taco with spicy paneer and fresh toppings',
+      price: 580.17,
+      imageUrl: 'assets/images/paneer_taco.jpg',
       isAvailable: true,
       category: 'Tacos',
       preparationTime: 8,
-      tags: ['mexican', 'beef'],
+      tags: ['vegetarian', 'paneer'],
     ),
   ];
 
   // Mock Discounts
   static final List<DiscountModel> discounts = [
-    DiscountModel(
+    const DiscountModel(
       discountId: 'discount_1',
       vendorId: 'vendor_1',
       type: AppConstants.discountPercentage,
       value: 10.0,
       description: '10% off on all pizzas',
-      minOrderAmount: 20.0,
+      minOrderAmount: 1660.0,
       isActive: true,
     ),
-    DiscountModel(
+    const DiscountModel(
       discountId: 'discount_2',
       vendorId: 'vendor_2',
       type: AppConstants.discountFixed,
-      value: 2.0,
-      description: '\$2 off on burgers',
-      minOrderAmount: 10.0,
+      value: 166.0,
+      description: '₹166 off on burgers',
+      minOrderAmount: 830.0,
       isActive: true,
     ),
   ];
@@ -207,11 +207,11 @@ class MockDataSource {
         OrderItemModel(
           menuItemId: 'menu_1',
           name: 'Margherita Pizza',
-          price: 12.99,
+          price: 1078.17,
           quantity: 1,
         ),
       ],
-      totalAmount: 12.99,
+      totalAmount: 1078.17,
       status: AppConstants.orderCompleted,
       pickupSlot: DateTime.now().subtract(const Duration(hours: 2)),
       createdAt: DateTime.now().subtract(const Duration(hours: 3)),
@@ -224,12 +224,12 @@ class MockDataSource {
       items: [
         OrderItemModel(
           menuItemId: 'menu_3',
-          name: 'Classic Burger',
-          price: 8.99,
+          name: 'Veggie Burger',
+          price: 663.17,
           quantity: 2,
         ),
       ],
-      totalAmount: 17.98,
+      totalAmount: 1326.34,
       status: AppConstants.orderPreparing,
       pickupSlot: DateTime.now().add(const Duration(minutes: 30)),
       createdAt: DateTime.now().subtract(const Duration(minutes: 15)),
@@ -242,7 +242,7 @@ class MockDataSource {
     TransactionModel(
       transactionId: 'txn_1',
       userId: 'user_1',
-      amount: 50.00,
+      amount: 4150.00,
       type: AppConstants.transactionCredit,
       status: AppConstants.transactionSuccess,
       createdAt: DateTime.now().subtract(const Duration(days: 1)),
@@ -251,7 +251,7 @@ class MockDataSource {
     TransactionModel(
       transactionId: 'txn_2',
       userId: 'user_1',
-      amount: 12.99,
+      amount: 1078.17,
       type: AppConstants.transactionDebit,
       status: AppConstants.transactionSuccess,
       createdAt: DateTime.now().subtract(const Duration(hours: 3)),
@@ -261,7 +261,7 @@ class MockDataSource {
     TransactionModel(
       transactionId: 'txn_3',
       userId: 'user_4',
-      amount: 75.50,
+      amount: 6266.50,
       type: AppConstants.transactionCredit,
       status: AppConstants.transactionSuccess,
       createdAt: DateTime.now().subtract(const Duration(days: 2)),
