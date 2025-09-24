@@ -43,7 +43,7 @@ class OrderHistoryScreen extends StatelessWidget {
                           margin: const EdgeInsets.all(8.0),
                           child: ListTile(
                             title: Text('Order #${order.orderId}'),
-                            subtitle: Text('Total: \$${order.totalAmount
+                            subtitle: Text('Total: ₹${order.totalAmount
                                 .toStringAsFixed(2)}'),
                             trailing: Text(order.status),
                             onTap: () {

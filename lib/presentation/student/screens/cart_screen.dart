@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:campus_food_app/presentation/student/bloc/order_bloc.dart';
 
-// Change the class name from MenuScreen to CartScreen
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
@@ -22,10 +21,79 @@ class CartScreen extends StatelessWidget {
                     itemCount: state.cartItems.length,
                     itemBuilder: (context, index) {
                       final cartItem = state.cartItems[index];
-                      return ListTile(
-                        title: Text(cartItem.menuItem.name),
-                        subtitle: Text('₹${cartItem.menuItem.price.toStringAsFixed(2)}'),
-                        trailing: Text('Qty: ${cartItem.quantity}'),
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      cartItem.menuItem.name,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                        '₹${cartItem.menuItem.price.toStringAsFixed(2)}'),
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.remove),
+                                    onPressed: () {
+                                      if (cartItem.quantity > 1) {
+                                        context.read<OrderBloc>().add(
+                                          UpdateCartItemQuantity(
+                                            menuItemId: cartItem
+                                                .menuItem.menuItemId,
+                                            quantity: cartItem.quantity - 1,
+                                          ),
+                                        );
+                                      } else {
+                                        context.read<OrderBloc>().add(
+                                          RemoveFromCart(
+                                              menuItemId: cartItem
+                                                  .menuItem.menuItemId),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  Text('${cartItem.quantity}'),
+                                  IconButton(
+                                    icon: const Icon(Icons.add),
+                                    onPressed: () {
+                                      context.read<OrderBloc>().add(
+                                        UpdateCartItemQuantity(
+                                          menuItemId:
+                                          cartItem.menuItem.menuItemId,
+                                          quantity: cartItem.quantity + 1,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete,
+                                        color: Colors.red),
+                                    onPressed: () {
+                                      context.read<OrderBloc>().add(
+                                        RemoveFromCart(
+                                            menuItemId:
+                                            cartItem.menuItem.menuItemId),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -59,8 +127,9 @@ class CartScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '₹${state.totalAmount.toStringAsFixed(2)}', // Changed from $
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  '₹${state.totalAmount.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ],
             ),

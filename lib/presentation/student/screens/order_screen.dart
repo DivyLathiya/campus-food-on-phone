@@ -1,47 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:campus_food_app/presentation/student/bloc/order_bloc.dart';
-import 'package:campus_food_app/domain/entities/vendor_entity.dart';
 import 'package:campus_food_app/domain/entities/menu_item_entity.dart';
 
-class MenuScreen extends StatefulWidget {
-  final VendorEntity vendor;
-
-  const MenuScreen({super.key, required this.vendor});
+class OrderScreen extends StatefulWidget {
+  const OrderScreen({super.key});
 
   @override
-  State<MenuScreen> createState() => _MenuScreenState();
+  State<OrderScreen> createState() => _OrderScreenState();
 }
 
-class _MenuScreenState extends State<MenuScreen> {
+class _OrderScreenState extends State<OrderScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<OrderBloc>().add(LoadVendorMenu(vendorId: widget.vendor.vendorId));
+    // Assuming 'vendor_1' is the default vendor for veg items.
+    // In a real app, you might have a vendor selection screen first.
+    context.read<OrderBloc>().add(const LoadVendorMenu(vendorId: 'vendor_1'));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.vendor.name),
+        title: const Text('Order Vegetarian Food'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.pushNamed(context, '/student/cart');
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<OrderBloc, OrderState>(
         builder: (context, state) {
           if (state is OrderLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is VendorMenuLoaded) {
+            final vegMenuItems = state.menuItems
+                .where((item) =>
+            item.tags?.contains('vegetarian') ?? false)
+                .toList();
             return ListView.builder(
-              itemCount: state.menuItems.length,
+              itemCount: vegMenuItems.length,
               itemBuilder: (context, index) {
-                final menuItem = state.menuItems[index];
+                final menuItem = vegMenuItems[index];
                 return _buildMenuItemCard(context, menuItem);
               },
             );
           } else if (state is OrderError) {
             return Center(child: Text(state.message));
           }
-          return const Center(child: Text('No menu items found.'));
+          return const Center(child: Text('No vegetarian menu items found.'));
         },
       ),
     );
