@@ -14,18 +14,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => AuthBloc(
-            authRepository: MockAuthRepository(),
-          )..add(const AuthCheckStatus()),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => AuthBloc(
+        authRepository: MockAuthRepository(),
+      )..add(const AuthCheckStatus()),
       child: MaterialApp(
         title: 'Campus Food App',
         theme: AppTheme.lightTheme,
         onGenerateRoute: AppRouter.generateRoute,
+        initialRoute: '/', // Make sure the initial route is set
         debugShowCheckedModeBanner: false,
       ),
     );

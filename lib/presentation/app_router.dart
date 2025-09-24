@@ -3,12 +3,13 @@ import 'package:campus_food_app/presentation/auth/screens/login_screen.dart';
 import 'package:campus_food_app/presentation/student/screens/student_home_screen.dart';
 import 'package:campus_food_app/presentation/vendor/screens/vendor_home_screen.dart';
 import 'package:campus_food_app/presentation/admin/screens/admin_home_screen.dart';
+import 'package:campus_food_app/presentation/auth/screens/splash_screen.dart'; // Import the splash screen
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const LoginScreen());
+        return MaterialPageRoute(builder: (_) => const SplashScreen()); // Set SplashScreen as the initial route
       case '/login':
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case '/student/home':
