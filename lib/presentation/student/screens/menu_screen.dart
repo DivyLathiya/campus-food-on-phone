@@ -25,6 +25,14 @@ class _MenuScreenState extends State<MenuScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.vendor.name),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.pushNamed(context, '/student/cart');
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<OrderBloc, OrderState>(
         builder: (context, state) {
@@ -35,7 +43,10 @@ class _MenuScreenState extends State<MenuScreen> {
               itemCount: state.menuItems.length,
               itemBuilder: (context, index) {
                 final menuItem = state.menuItems[index];
-                return _buildMenuItemCard(context, menuItem);
+                final discountedPrice = menuItem.price * 0.9; // 10% discount
+                final hasDiscount = true; // For demo purposes
+
+                return _buildMenuItemCard(context, menuItem, hasDiscount, discountedPrice);
               },
             );
           } else if (state is OrderError) {
@@ -47,7 +58,7 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  Widget _buildMenuItemCard(BuildContext context, MenuItemEntity menuItem) {
+  Widget _buildMenuItemCard(BuildContext context, MenuItemEntity menuItem, bool hasDiscount, double discountedPrice) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Padding(
@@ -74,12 +85,25 @@ class _MenuScreenState extends State<MenuScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '₹${menuItem.price.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if(hasDiscount)
+                      Text(
+                        '₹${menuItem.price.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.grey
+                        ),
+                      ),
+                    Text(
+                      '₹${(hasDiscount ? discountedPrice : menuItem.price).toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
                 ElevatedButton(
                   onPressed: () {

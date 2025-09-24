@@ -17,7 +17,7 @@ class AdminHomeScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Vendor Dashboard'),
+          title: const Text('Admin Dashboard'),
           actions: [
             IconButton(
               icon: const Icon(Icons.logout),
@@ -51,7 +51,7 @@ class AdminHomeScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             const Text(
-                              'Vendor Dashboard',
+                              'Admin Dashboard',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.grey,
@@ -75,8 +75,8 @@ class AdminHomeScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: _buildStatCard(
-                            'Pending Orders',
-                            '5',
+                            'Pending Vendors',
+                            '1',
                             Icons.pending_actions,
                             AppTheme.warningColor,
                           ),
@@ -84,8 +84,8 @@ class AdminHomeScreen extends StatelessWidget {
                         const SizedBox(width: 16),
                         Expanded(
                           child: _buildStatCard(
-                            'Today\'s Revenue',
-                            '₹2245.00',
+                            'Total Revenue',
+                            '₹10245.00',
                             Icons.attach_money,
                             AppTheme.successColor,
                           ),
@@ -93,9 +93,9 @@ class AdminHomeScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    // Vendor Actions
+                    // Admin Actions
                     const Text(
-                      'Vendor Actions',
+                      'Admin Actions',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -110,26 +110,26 @@ class AdminHomeScreen extends StatelessWidget {
                       children: [
                         _buildQuickActionCard(
                           context,
-                          icon: Icons.receipt_long,
-                          title: 'Manage Orders',
-                          subtitle: 'View & process orders',
+                          icon: Icons.store,
+                          title: 'Manage Vendors',
+                          subtitle: 'Approve & view vendors',
                           onTap: () {
-                            // TODO: Navigate to order management
+                            // TODO: Navigate to vendor management
                           },
                         ),
                         _buildQuickActionCard(
                           context,
-                          icon: Icons.restaurant_menu,
-                          title: 'Menu Management',
-                          subtitle: 'Edit menu items',
+                          icon: Icons.people,
+                          title: 'Manage Users',
+                          subtitle: 'View users',
                           onTap: () {
-                            // TODO: Navigate to menu management
+                            // TODO: Navigate to user management
                           },
                         ),
                         _buildQuickActionCard(
                           context,
                           icon: Icons.analytics,
-                          title: 'Sales Reports',
+                          title: 'System Analytics',
                           subtitle: 'View analytics',
                           onTap: () {
                             // TODO: Navigate to sales reports
@@ -137,9 +137,9 @@ class AdminHomeScreen extends StatelessWidget {
                         ),
                         _buildQuickActionCard(
                           context,
-                          icon: Icons.local_offer,
-                          title: 'Discounts',
-                          subtitle: 'Manage promotions',
+                          icon: Icons.feedback,
+                          title: 'Feedback',
+                          subtitle: 'View user feedback',
                           onTap: () {
                             // TODO: Navigate to discount management
                           },

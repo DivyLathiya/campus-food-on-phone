@@ -4,9 +4,23 @@ import 'package:campus_food_app/presentation/auth/bloc/auth_bloc.dart';
 import 'package:campus_food_app/presentation/student/bloc/order_bloc.dart';
 import 'package:campus_food_app/presentation/student/bloc/wallet_bloc.dart';
 import 'package:campus_food_app/core/utils/app_theme.dart';
+import 'package:intl/intl.dart';
 
-class CheckoutScreen extends StatelessWidget {
+class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
+
+  @override
+  _CheckoutScreenState createState() => _CheckoutScreenState();
+}
+
+class _CheckoutScreenState extends State<CheckoutScreen> {
+  DateTime? _pickupTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _pickupTime = DateTime.now().add(const Duration(minutes: 30));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +69,7 @@ class CheckoutScreen extends StatelessWidget {
           if (orderState is! VendorMenuLoaded) {
             return const Center(child: CircularProgressIndicator());
           }
+          final discountedTotal = orderState.totalAmount * 0.9; // Applying a 10% discount for demo
           return BlocBuilder<WalletBloc, WalletState>(
             builder: (context, walletState) {
               if (walletState is! WalletBalanceLoaded) {
@@ -86,6 +101,14 @@ class CheckoutScreen extends StatelessWidget {
                                     '₹${(item.menuItem.price * item.quantity).toStringAsFixed(2)}'),
                               ),
                             ),
+                            ListTile(
+                              title: const Text( 'Subtotal'),
+                              trailing: Text('₹${orderState.totalAmount.toStringAsFixed(2)}'),
+                            ),
+                            ListTile(
+                              title: const Text('Discount (10%)'),
+                              trailing: Text('- ₹${(orderState.totalAmount - discountedTotal).toStringAsFixed(2)}', style: const TextStyle(color: AppTheme.successColor)),
+                            ),
                             const Divider(),
                             ListTile(
                               title: const Text(
@@ -95,7 +118,7 @@ class CheckoutScreen extends StatelessWidget {
                                 ),
                               ),
                               trailing: Text(
-                                '₹${orderState.totalAmount.toStringAsFixed(2)}',
+                                '₹${discountedTotal.toStringAsFixed(2)}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -104,6 +127,22 @@ class CheckoutScreen extends StatelessWidget {
                           ],
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 16),
+                    Card(
+                        child: ListTile(
+                          title: const Text("Pickup Time"),
+                          subtitle: Text(DateFormat.yMMMd().add_jm().format(_pickupTime!)),
+                          trailing: const Icon(Icons.edit),
+                          onTap: () async {
+                            final selectedTime = await Navigator.pushNamed(context, '/student/pickup-slot');
+                            if(selectedTime != null){
+                              setState(() {
+                                _pickupTime = selectedTime as DateTime;
+                              });
+                            }
+                          },
+                        )
                     ),
                     const SizedBox(height: 16),
                     Card(
@@ -135,30 +174,41 @@ class CheckoutScreen extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    // Show a loading indicator on the button when placing an order
                     if (orderState is OrderLoading)
                       const Center(child: CircularProgressIndicator())
                     else
                       ElevatedButton(
                         onPressed: () {
-                          if (walletState.balance >= orderState.totalAmount) {
+                          if (walletState.balance >= discountedTotal) {
                             final authState = context.read<AuthBloc>().state;
                             if (authState is AuthAuthenticated) {
                               context.read<OrderBloc>().add(
                                 PlaceOrder(
                                   userId: authState.userId,
-                                  pickupTime: DateTime.now()
-                                      .add(const Duration(minutes: 30)),
+                                  pickupTime: _pickupTime!,
                                 ),
                               );
                             }
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Insufficient wallet balance.'),
-                                backgroundColor: AppTheme.errorColor,
-                              ),
-                            );
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text("Insufficient Balance"),
+                                  content: const Text(
+                                      "You do not have enough funds in your wallet. Please top-up."),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          Navigator.pushNamed(context, '/student/wallet');
+                                        },
+                                        child: const Text("Top-up")),
+                                    TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context),
+                                        child: const Text("OK")),
+                                  ],
+                                ));
                           }
                         },
                         child: const Text('Confirm Order'),

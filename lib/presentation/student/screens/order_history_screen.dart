@@ -90,7 +90,7 @@ class OrderHistoryScreen extends StatelessWidget {
                             ],
                           ),
                           onTap: () {
-                            // TODO: Navigate to order details screen
+                            Navigator.pushNamed(context, '/student/order-details', arguments: order);
                           },
                         ),
                       );
