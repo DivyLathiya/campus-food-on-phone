@@ -5,7 +5,7 @@ class EnhancedDiscountModel {
   final String vendorId;
   final String title;
   final String description;
-  final String type; // 'percentage', 'fixed', 'combo', 'happy_hour'
+  final String type; // 'percentage', 'fixed', 'combo', 'happy_hour', 'wallet_only'
   final double value;
   final double? minOrderAmount;
   final DateTime? startDate;
@@ -27,6 +27,9 @@ class EnhancedDiscountModel {
   final int? maxUsageCount;
   final int? currentUsageCount;
   final List<String>? applicableCategories;
+  
+  // Wallet-only discount specific fields
+  final bool walletOnly;
   
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -52,6 +55,7 @@ class EnhancedDiscountModel {
     this.maxUsageCount,
     this.currentUsageCount,
     this.applicableCategories,
+    this.walletOnly = false,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -78,6 +82,7 @@ class EnhancedDiscountModel {
       maxUsageCount: entity.maxUsageCount,
       currentUsageCount: entity.currentUsageCount,
       applicableCategories: entity.applicableCategories,
+      walletOnly: entity.walletOnly,
       createdAt: DateTime.now(), // Entity doesn't have createdAt, using current time
       updatedAt: DateTime.now(), // Entity doesn't have updatedAt, using current time
     );
@@ -104,6 +109,7 @@ class EnhancedDiscountModel {
       maxUsageCount: maxUsageCount,
       currentUsageCount: currentUsageCount,
       applicableCategories: applicableCategories,
+      walletOnly: walletOnly,
     );
   }
 
@@ -129,6 +135,7 @@ class EnhancedDiscountModel {
       'maxUsageCount': maxUsageCount,
       'currentUsageCount': currentUsageCount,
       'applicableCategories': applicableCategories,
+      'walletOnly': walletOnly,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -162,6 +169,7 @@ class EnhancedDiscountModel {
       maxUsageCount: json['maxUsageCount'],
       currentUsageCount: json['currentUsageCount'],
       applicableCategories: json['applicableCategories']?.cast<String>(),
+      walletOnly: json['walletOnly'] ?? false,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
     );
@@ -188,6 +196,7 @@ class EnhancedDiscountModel {
     int? maxUsageCount,
     int? currentUsageCount,
     List<String>? applicableCategories,
+    bool? walletOnly,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -212,6 +221,7 @@ class EnhancedDiscountModel {
       maxUsageCount: maxUsageCount ?? this.maxUsageCount,
       currentUsageCount: currentUsageCount ?? this.currentUsageCount,
       applicableCategories: applicableCategories ?? this.applicableCategories,
+      walletOnly: walletOnly ?? this.walletOnly,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

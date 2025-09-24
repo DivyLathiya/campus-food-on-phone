@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class EnhancedDiscountEntity extends Equatable {
   final String discountId;
   final String vendorId;
-  final String type; // 'percentage', 'fixed', 'combo', 'happy_hour'
+  final String type; // 'percentage', 'fixed', 'combo', 'happy_hour', 'wallet_only'
   final double value;
   final String description;
   final DateTime? startDate;
@@ -26,6 +26,9 @@ class EnhancedDiscountEntity extends Equatable {
   final int? maxUsageCount;
   final int? currentUsageCount;
   final List<String>? applicableCategories;
+  
+  // Wallet-only discount specific fields
+  final bool walletOnly;
 
   const EnhancedDiscountEntity({
     required this.discountId,
@@ -47,6 +50,7 @@ class EnhancedDiscountEntity extends Equatable {
     this.maxUsageCount,
     this.currentUsageCount,
     this.applicableCategories,
+    this.walletOnly = false,
   });
 
   bool get isValid {
@@ -67,6 +71,13 @@ class EnhancedDiscountEntity extends Equatable {
       return _isHappyHourActive(now);
     }
     
+    return true;
+  }
+  
+  bool isApplicableToPaymentMethod(String paymentMethod) {
+    if (walletOnly && paymentMethod.toLowerCase() != 'wallet') {
+      return false;
+    }
     return true;
   }
 
@@ -285,6 +296,7 @@ class EnhancedDiscountEntity extends Equatable {
       maxUsageCount,
       currentUsageCount,
       applicableCategories,
+      walletOnly,
     ];
   }
 }

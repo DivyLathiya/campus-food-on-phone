@@ -29,6 +29,7 @@ class MockEnhancedDiscountRepository implements EnhancedDiscountRepository {
       maxUsageCount: discount.maxUsageCount,
       currentUsageCount: discount.currentUsageCount,
       applicableCategories: discount.applicableCategories,
+      walletOnly: discount.walletOnly,
     )).toList();
   }
 
@@ -58,6 +59,7 @@ class MockEnhancedDiscountRepository implements EnhancedDiscountRepository {
         maxUsageCount: discount.maxUsageCount,
         currentUsageCount: discount.currentUsageCount,
         applicableCategories: discount.applicableCategories,
+        walletOnly: discount.walletOnly,
       );
     } catch (e) {
       return null;
@@ -89,6 +91,7 @@ class MockEnhancedDiscountRepository implements EnhancedDiscountRepository {
       maxUsageCount: discount.maxUsageCount,
       currentUsageCount: discount.currentUsageCount ?? 0,
       applicableCategories: discount.applicableCategories,
+      walletOnly: discount.walletOnly,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
@@ -115,6 +118,7 @@ class MockEnhancedDiscountRepository implements EnhancedDiscountRepository {
       maxUsageCount: newDiscount.maxUsageCount,
       currentUsageCount: newDiscount.currentUsageCount,
       applicableCategories: newDiscount.applicableCategories,
+      walletOnly: newDiscount.walletOnly,
     );
   }
 
@@ -142,6 +146,7 @@ class MockEnhancedDiscountRepository implements EnhancedDiscountRepository {
         maxUsageCount: discount.maxUsageCount,
         currentUsageCount: discount.currentUsageCount,
         applicableCategories: discount.applicableCategories,
+        walletOnly: discount.walletOnly,
       );
       
       MockDataSource.enhancedDiscounts[index] = updatedDiscount;
@@ -166,6 +171,7 @@ class MockEnhancedDiscountRepository implements EnhancedDiscountRepository {
         maxUsageCount: updatedDiscount.maxUsageCount,
         currentUsageCount: updatedDiscount.currentUsageCount,
         applicableCategories: updatedDiscount.applicableCategories,
+        walletOnly: updatedDiscount.walletOnly,
       );
     }
     

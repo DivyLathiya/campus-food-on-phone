@@ -2,14 +2,16 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:campus_food_app/domain/entities/order_entity.dart';
 import 'package:campus_food_app/domain/repositories/order_repository.dart';
+import 'package:campus_food_app/domain/repositories/user_repository.dart';
 
 part 'order_event.dart';
 part 'order_state.dart';
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final OrderRepository orderRepository;
+  final UserRepository userRepository;
 
-  OrderBloc({required this.orderRepository}) : super(OrderInitial()) {
+  OrderBloc({required this.orderRepository, required this.userRepository}) : super(OrderInitial()) {
     on<LoadOrders>(_onLoadOrders);
     on<UpdateOrderStatus>(_onUpdateOrderStatus);
     on<AcceptOrder>(_onAcceptOrder);
@@ -117,6 +119,21 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     try {
       final currentState = state;
       if (currentState is OrderLoaded) {
+        // Find the order to check payment method
+        final order = currentState.orders.firstWhere(
+          (order) => order.orderId == event.orderId,
+          orElse: () => throw Exception('Order not found'),
+        );
+        
+        // Process instant refund if paid with wallet
+        if (order.paymentMethod == 'wallet') {
+          await userRepository.addFundsToWallet(
+            order.studentId,
+            order.totalAmount,
+            'Refund for rejected order ${order.orderId}',
+          );
+        }
+        
         await orderRepository.updateOrderStatus(event.orderId, 'rejected');
         
         // Reload orders to get updated state
@@ -125,8 +142,13 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         final preparingOrders = _filterOrdersByStatus(updatedOrders, 'preparing');
         final readyOrders = _filterOrdersByStatus(updatedOrders, 'ready');
 
+        String message = 'Order rejected successfully';
+        if (order.paymentMethod == 'wallet') {
+          message += ' and refund processed';
+        }
+
         emit(OrderOperationSuccess(
-          message: 'Order rejected successfully',
+          message: message,
           orders: updatedOrders,
         ));
         

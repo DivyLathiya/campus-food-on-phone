@@ -31,6 +31,7 @@ class OrderEntity extends Equatable {
   final String? specialInstructions;
   final double? discountAmount;
   final String? discountId;
+  final String paymentMethod; // 'wallet' or 'other'
 
   const OrderEntity({
     required this.orderId,
@@ -45,25 +46,57 @@ class OrderEntity extends Equatable {
     this.specialInstructions,
     this.discountAmount,
     this.discountId,
+    this.paymentMethod = 'other',
   });
+
+  OrderEntity copyWith({
+    String? orderId,
+    String? studentId,
+    String? vendorId,
+    List<OrderItemEntity>? items,
+    double? totalAmount,
+    String? status,
+    DateTime? pickupSlot,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? specialInstructions,
+    double? discountAmount,
+    String? discountId,
+    String? paymentMethod,
+  }) {
+    return OrderEntity(
+      orderId: orderId ?? this.orderId,
+      studentId: studentId ?? this.studentId,
+      vendorId: vendorId ?? this.vendorId,
+      items: items ?? this.items,
+      totalAmount: totalAmount ?? this.totalAmount,
+      status: status ?? this.status,
+      pickupSlot: pickupSlot ?? this.pickupSlot,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      specialInstructions: specialInstructions ?? this.specialInstructions,
+      discountAmount: discountAmount ?? this.discountAmount,
+      discountId: discountId ?? this.discountId,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+    );
+  }
 
   int get totalItems => items.fold(0, (sum, item) => sum + item.quantity);
 
   @override
-  List<Object?> get props {
-    return [
-      orderId,
-      studentId,
-      vendorId,
-      items,
-      totalAmount,
-      status,
-      pickupSlot,
-      createdAt,
-      updatedAt,
-      specialInstructions,
-      discountAmount,
-      discountId,
-    ];
-  }
+  List<Object?> get props => [
+        orderId,
+        studentId,
+        vendorId,
+        items,
+        totalAmount,
+        status,
+        pickupSlot,
+        createdAt,
+        updatedAt,
+        specialInstructions,
+        discountAmount,
+        discountId,
+        paymentMethod,
+      ];
 }

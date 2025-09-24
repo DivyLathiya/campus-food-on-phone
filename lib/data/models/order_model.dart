@@ -51,6 +51,7 @@ class OrderModel extends Equatable {
   final String? specialInstructions;
   final double? discountAmount;
   final String? discountId;
+  final String paymentMethod;
 
   const OrderModel({
     required this.orderId,
@@ -65,6 +66,7 @@ class OrderModel extends Equatable {
     this.specialInstructions,
     this.discountAmount,
     this.discountId,
+    this.paymentMethod = 'other',
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -87,6 +89,7 @@ class OrderModel extends Equatable {
           ? (json['discountAmount'] as num).toDouble()
           : null,
       discountId: json['discountId'] as String?,
+      paymentMethod: json['paymentMethod'] as String? ?? 'other',
     );
   }
 
@@ -98,12 +101,12 @@ class OrderModel extends Equatable {
       'items': items.map((item) => item.toJson()).toList(),
       'totalAmount': totalAmount,
       'status': status,
-      'pickupSlot': pickupSlot.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
       'specialInstructions': specialInstructions,
       'discountAmount': discountAmount,
       'discountId': discountId,
+      'paymentMethod': paymentMethod,
     };
   }
 
@@ -120,6 +123,7 @@ class OrderModel extends Equatable {
     String? specialInstructions,
     double? discountAmount,
     String? discountId,
+    String? paymentMethod,
   }) {
     return OrderModel(
       orderId: orderId ?? this.orderId,
@@ -134,26 +138,24 @@ class OrderModel extends Equatable {
       specialInstructions: specialInstructions ?? this.specialInstructions,
       discountAmount: discountAmount ?? this.discountAmount,
       discountId: discountId ?? this.discountId,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
     );
   }
 
-  int get totalItems => items.fold(0, (sum, item) => sum + item.quantity);
-
   @override
-  List<Object?> get props {
-    return [
-      orderId,
-      studentId,
-      vendorId,
-      items,
-      totalAmount,
-      status,
-      pickupSlot,
-      createdAt,
-      updatedAt,
-      specialInstructions,
-      discountAmount,
-      discountId,
-    ];
-  }
+  List<Object?> get props => [
+        orderId,
+        studentId,
+        vendorId,
+        items,
+        totalAmount,
+        status,
+        pickupSlot,
+        createdAt,
+        updatedAt,
+        specialInstructions,
+        discountAmount,
+        discountId,
+        paymentMethod,
+      ];
 }

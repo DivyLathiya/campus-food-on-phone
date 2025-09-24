@@ -165,13 +165,23 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       if (currentState is VendorMenuLoaded &&
           currentState.cartItems.isNotEmpty) {
         final user = await userRepository.getUserById(event.userId);
-        if (user != null &&
-            user.walletBalance >= currentState.totalAmount) {
-          await userRepository.withdrawFromWallet(
-            event.userId,
-            currentState.totalAmount,
-            'Order Payment',
-          );
+        bool canPlaceOrder = false;
+        
+        if (event.paymentMethod == 'wallet') {
+          if (user != null && user.walletBalance >= currentState.totalAmount) {
+            await userRepository.withdrawFromWallet(
+              event.userId,
+              currentState.totalAmount,
+              'Order Payment',
+            );
+            canPlaceOrder = true;
+          }
+        } else {
+          // For other payment methods, assume payment is successful
+          canPlaceOrder = true;
+        }
+        
+        if (canPlaceOrder) {
 
           // Convert cart items to order items
           final orderItems =
@@ -194,6 +204,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
             pickupSlot: event.pickupTime,
             createdAt: DateTime.now(),
             specialInstructions: event.specialInstructions,
+            paymentMethod: event.paymentMethod,
           );
 
           final createdOrder = await orderRepository.createOrder(order);

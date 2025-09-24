@@ -59,15 +59,17 @@ class PlaceOrder extends OrderEvent {
   final String userId;
   final DateTime pickupTime;
   final String? specialInstructions;
+  final String paymentMethod;
 
   const PlaceOrder({
     required this.userId,
     required this.pickupTime,
     this.specialInstructions,
+    this.paymentMethod = 'other',
   });
 
   @override
-  List<Object> get props => [userId, pickupTime, specialInstructions ?? ''];
+  List<Object> get props => [userId, pickupTime, specialInstructions ?? '', paymentMethod];
 }
 
 class LoadOrderHistory extends OrderEvent {
