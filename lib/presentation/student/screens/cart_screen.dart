@@ -136,7 +136,7 @@ class CartScreen extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // TODO: Navigate to checkout screen
+                Navigator.pushNamed(context, '/student/checkout');
               },
               child: const Text('Proceed to Checkout'),
             ),

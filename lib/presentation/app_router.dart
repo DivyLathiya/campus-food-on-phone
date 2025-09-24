@@ -8,7 +8,9 @@ import 'package:campus_food_app/presentation/auth/screens/splash_screen.dart';
 import 'package:campus_food_app/presentation/student/screens/vendor_list_screen.dart';
 import 'package:campus_food_app/presentation/student/screens/menu_screen.dart';
 import 'package:campus_food_app/presentation/student/screens/cart_screen.dart';
+import 'package:campus_food_app/presentation/student/screens/checkout_screen.dart';
 import 'package:campus_food_app/presentation/student/screens/order_history_screen.dart';
+import 'package:campus_food_app/presentation/student/screens/wallet_screen.dart';
 import 'package:campus_food_app/domain/entities/vendor_entity.dart';
 import 'package:campus_food_app/presentation/student/screens/order_screen.dart';
 
@@ -30,8 +32,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => MenuScreen(vendor: vendor));
       case '/student/cart':
         return MaterialPageRoute(builder: (_) => const CartScreen());
+      case '/student/checkout':
+        return MaterialPageRoute(builder: (_) => const CheckoutScreen());
       case '/student/order-history':
         return MaterialPageRoute(builder: (_) => const OrderHistoryScreen());
+      case '/student/wallet':
+        return MaterialPageRoute(builder: (_) => const WalletScreen());
       case '/vendor/home':
         return MaterialPageRoute(builder: (_) => const VendorHomeScreen());
       case '/admin/home':
@@ -47,4 +53,3 @@ class AppRouter {
     }
   }
 }
-

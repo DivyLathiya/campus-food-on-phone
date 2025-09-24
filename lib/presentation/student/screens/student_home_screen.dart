@@ -92,7 +92,7 @@ class StudentHomeScreen extends StatelessWidget {
                           title: 'My Wallet',
                           subtitle: 'Check balance & top-up',
                           onTap: () {
-                            // TODO: Navigate to wallet screen
+                            Navigator.pushNamed(context, '/student/wallet');
                           },
                         ),
                         _buildQuickActionCard(

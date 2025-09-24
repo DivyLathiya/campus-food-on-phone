@@ -6,6 +6,7 @@ import 'package:campus_food_app/domain/entities/menu_item_entity.dart';
 import 'package:campus_food_app/domain/repositories/order_repository.dart';
 import 'package:campus_food_app/domain/repositories/vendor_repository.dart';
 import 'package:campus_food_app/domain/repositories/menu_repository.dart';
+import 'package:campus_food_app/domain/repositories/user_repository.dart';
 
 part 'order_event.dart';
 part 'order_state.dart';
@@ -14,11 +15,13 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final OrderRepository orderRepository;
   final VendorRepository vendorRepository;
   final MenuRepository menuRepository;
+  final UserRepository userRepository;
 
   OrderBloc({
     required this.orderRepository,
     required this.vendorRepository,
     required this.menuRepository,
+    required this.userRepository,
   }) : super(const OrderInitial()) {
     on<LoadVendors>(_onLoadVendors);
     on<LoadVendorMenu>(_onLoadVendorMenu);
@@ -159,34 +162,48 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     emit(const OrderLoading());
     try {
       final currentState = state;
-      if (currentState is VendorMenuLoaded && currentState.cartItems.isNotEmpty) {
-        // Convert cart items to order items
-        final orderItems = currentState.cartItems.map((cartItem) => OrderItemEntity(
-          menuItemId: cartItem.menuItem.menuItemId,
-          name: cartItem.menuItem.name,
-          price: cartItem.menuItem.price,
-          quantity: cartItem.quantity,
-        )).toList();
+      if (currentState is VendorMenuLoaded &&
+          currentState.cartItems.isNotEmpty) {
+        final user = await userRepository.getUserById(event.userId);
+        if (user != null &&
+            user.walletBalance >= currentState.totalAmount) {
+          await userRepository.withdrawFromWallet(
+            event.userId,
+            currentState.totalAmount,
+            'Order Payment',
+          );
 
-        final totalAmount = currentState.totalAmount;
+          // Convert cart items to order items
+          final orderItems =
+          currentState.cartItems.map((cartItem) => OrderItemEntity(
+            menuItemId: cartItem.menuItem.menuItemId,
+            name: cartItem.menuItem.name,
+            price: cartItem.menuItem.price,
+            quantity: cartItem.quantity,
+          )).toList();
 
-        final order = OrderEntity(
-          orderId: 'order_${DateTime.now().millisecondsSinceEpoch}',
-          studentId: event.userId,
-          vendorId: currentState.vendorId,
-          items: orderItems,
-          totalAmount: totalAmount,
-          status: 'pending',
-          pickupSlot: event.pickupTime,
-          createdAt: DateTime.now(),
-          specialInstructions: event.specialInstructions,
-        );
+          final totalAmount = currentState.totalAmount;
 
-        final createdOrder = await orderRepository.createOrder(order);
+          final order = OrderEntity(
+            orderId: 'order_${DateTime.now().millisecondsSinceEpoch}',
+            studentId: event.userId,
+            vendorId: currentState.vendorId,
+            items: orderItems,
+            totalAmount: totalAmount,
+            status: 'pending',
+            pickupSlot: event.pickupTime,
+            createdAt: DateTime.now(),
+            specialInstructions: event.specialInstructions,
+          );
 
-        emit(OrderPlaced(order: createdOrder));
-        // Clear cart after successful order
-        add(ClearCart());
+          final createdOrder = await orderRepository.createOrder(order);
+
+          emit(OrderPlaced(order: createdOrder));
+          // Clear cart after successful order
+          add(const ClearCart());
+        } else {
+          emit(const OrderError(message: 'Insufficient wallet balance'));
+        }
       } else {
         emit(const OrderError(message: 'Cart is empty'));
       }
@@ -194,6 +211,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       emit(OrderError(message: e.toString()));
     }
   }
+
 
   Future<void> _onLoadOrderHistory(
       LoadOrderHistory event,
