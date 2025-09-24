@@ -17,6 +17,10 @@ import 'package:campus_food_app/presentation/student/screens/pickup_slot_screen.
 import 'package:campus_food_app/presentation/student/screens/order_details_screen.dart';
 import 'package:campus_food_app/presentation/student/screens/feedback_screen.dart';
 import 'package:campus_food_app/presentation/vendor/screens/discount_management_screen.dart';
+import 'package:campus_food_app/presentation/vendor/screens/menu_management_screen.dart';
+import 'package:campus_food_app/presentation/vendor/screens/order_management_screen.dart';
+import 'package:campus_food_app/presentation/vendor/screens/pickup_slot_control_screen.dart';
+import 'package:campus_food_app/presentation/vendor/screens/sales_reports_screen.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -54,6 +58,16 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const vendor.VendorHomeScreen());
       case '/vendor/discounts':
         return MaterialPageRoute(builder: (_) => const DiscountManagementScreen());
+      case '/vendor/menu':
+        return MaterialPageRoute(builder: (_) => const MenuManagementScreen());
+      case '/vendor/orders':
+        return MaterialPageRoute(builder: (_) => const OrderManagementScreen());
+      case '/vendor/pickup-slots':
+        final vendorId = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => PickupSlotControlScreen(vendorId: vendorId));
+      case '/vendor/sales-reports':
+        final vendorId = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => SalesReportsScreen(vendorId: vendorId));
       case '/admin/home':
         return MaterialPageRoute(builder: (_) => const admin.AdminHomeScreen());
       default:

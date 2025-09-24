@@ -114,7 +114,7 @@ class VendorHomeScreen extends StatelessWidget {
                           title: 'Manage Orders',
                           subtitle: 'View & process orders',
                           onTap: () {
-                            // TODO: Navigate to order management
+                            Navigator.pushNamed(context, '/vendor/orders');
                           },
                         ),
                         _buildQuickActionCard(
@@ -123,7 +123,7 @@ class VendorHomeScreen extends StatelessWidget {
                           title: 'Menu Management',
                           subtitle: 'Edit menu items',
                           onTap: () {
-                            // TODO: Navigate to menu management
+                            Navigator.pushNamed(context, '/vendor/menu');
                           },
                         ),
                         _buildQuickActionCard(
@@ -132,7 +132,10 @@ class VendorHomeScreen extends StatelessWidget {
                           title: 'Sales Reports',
                           subtitle: 'View analytics',
                           onTap: () {
-                            // TODO: Navigate to sales reports
+                            final state = context.read<AuthBloc>().state;
+                            if (state is AuthAuthenticated) {
+                              Navigator.pushNamed(context, '/vendor/sales-reports', arguments: state.userId);
+                            }
                           },
                         ),
                         _buildQuickActionCard(
@@ -142,6 +145,18 @@ class VendorHomeScreen extends StatelessWidget {
                           subtitle: 'Manage promotions',
                           onTap: () {
                             Navigator.pushNamed(context, '/vendor/discounts');
+                          },
+                        ),
+                        _buildQuickActionCard(
+                          context,
+                          icon: Icons.access_time,
+                          title: 'Pickup Slots',
+                          subtitle: 'Manage time slots',
+                          onTap: () {
+                            final state = context.read<AuthBloc>().state;
+                            if (state is AuthAuthenticated) {
+                              Navigator.pushNamed(context, '/vendor/pickup-slots', arguments: state.userId);
+                            }
                           },
                         ),
                       ],
