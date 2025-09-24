@@ -96,11 +96,15 @@ class OrderDetailsLoaded extends OrderState {
 
 class OrderCancelled extends OrderState {
   final OrderEntity order;
+  final String? message;
 
-  const OrderCancelled({required this.order});
+  const OrderCancelled({
+    required this.order,
+    this.message,
+  });
 
   @override
-  List<Object> get props => [order];
+  List<Object> get props => [order, message ?? ''];
 }
 
 class CartItem extends Equatable {

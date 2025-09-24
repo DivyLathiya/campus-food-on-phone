@@ -40,11 +40,15 @@ class AcceptOrder extends OrderEvent {
 
 class RejectOrder extends OrderEvent {
   final String orderId;
+  final String? reason;
 
-  const RejectOrder({required this.orderId});
+  const RejectOrder({
+    required this.orderId,
+    this.reason,
+  });
 
   @override
-  List<Object> get props => [orderId];
+  List<Object> get props => [orderId, reason ?? ''];
 }
 
 class MarkOrderPreparing extends OrderEvent {

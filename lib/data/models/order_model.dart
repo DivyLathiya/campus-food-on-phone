@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:campus_food_app/domain/entities/order_entity.dart';
 
 class OrderItemModel {
   final String menuItemId;
@@ -36,6 +37,26 @@ class OrderItemModel {
   }
 
   double get totalPrice => price * quantity;
+
+  factory OrderItemModel.fromEntity(OrderItemEntity entity) {
+    return OrderItemModel(
+      menuItemId: entity.menuItemId,
+      name: entity.name,
+      price: entity.price,
+      quantity: entity.quantity,
+      notes: entity.notes,
+    );
+  }
+
+  OrderItemEntity toEntity() {
+    return OrderItemEntity(
+      menuItemId: menuItemId,
+      name: name,
+      price: price,
+      quantity: quantity,
+      notes: notes,
+    );
+  }
 }
 
 class OrderModel extends Equatable {
@@ -52,6 +73,11 @@ class OrderModel extends Equatable {
   final double? discountAmount;
   final String? discountId;
   final String paymentMethod;
+  final DateTime? cancelledAt;
+  final String? cancellationReason;
+  final bool isRefunded;
+  final DateTime? refundedAt;
+  final String? refundReason;
 
   const OrderModel({
     required this.orderId,
@@ -67,6 +93,11 @@ class OrderModel extends Equatable {
     this.discountAmount,
     this.discountId,
     this.paymentMethod = 'other',
+    this.cancelledAt,
+    this.cancellationReason,
+    this.isRefunded = false,
+    this.refundedAt,
+    this.refundReason,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -90,6 +121,15 @@ class OrderModel extends Equatable {
           : null,
       discountId: json['discountId'] as String?,
       paymentMethod: json['paymentMethod'] as String? ?? 'other',
+      cancelledAt: json['cancelledAt'] != null 
+          ? DateTime.parse(json['cancelledAt'] as String)
+          : null,
+      cancellationReason: json['cancellationReason'] as String?,
+      isRefunded: json['isRefunded'] as bool? ?? false,
+      refundedAt: json['refundedAt'] != null 
+          ? DateTime.parse(json['refundedAt'] as String)
+          : null,
+      refundReason: json['refundReason'] as String?,
     );
   }
 
@@ -107,6 +147,11 @@ class OrderModel extends Equatable {
       'discountAmount': discountAmount,
       'discountId': discountId,
       'paymentMethod': paymentMethod,
+      'cancelledAt': cancelledAt?.toIso8601String(),
+      'cancellationReason': cancellationReason,
+      'isRefunded': isRefunded,
+      'refundedAt': refundedAt?.toIso8601String(),
+      'refundReason': refundReason,
     };
   }
 
@@ -124,6 +169,11 @@ class OrderModel extends Equatable {
     double? discountAmount,
     String? discountId,
     String? paymentMethod,
+    DateTime? cancelledAt,
+    String? cancellationReason,
+    bool? isRefunded,
+    DateTime? refundedAt,
+    String? refundReason,
   }) {
     return OrderModel(
       orderId: orderId ?? this.orderId,
@@ -139,6 +189,57 @@ class OrderModel extends Equatable {
       discountAmount: discountAmount ?? this.discountAmount,
       discountId: discountId ?? this.discountId,
       paymentMethod: paymentMethod ?? this.paymentMethod,
+      cancelledAt: cancelledAt ?? this.cancelledAt,
+      cancellationReason: cancellationReason ?? this.cancellationReason,
+      isRefunded: isRefunded ?? this.isRefunded,
+      refundedAt: refundedAt ?? this.refundedAt,
+      refundReason: refundReason ?? this.refundReason,
+    );
+  }
+
+  factory OrderModel.fromEntity(OrderEntity entity) {
+    return OrderModel(
+      orderId: entity.orderId,
+      studentId: entity.studentId,
+      vendorId: entity.vendorId,
+      items: entity.items.map((item) => OrderItemModel.fromEntity(item)).toList(),
+      totalAmount: entity.totalAmount,
+      status: entity.status,
+      pickupSlot: entity.pickupSlot,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      specialInstructions: entity.specialInstructions,
+      discountAmount: entity.discountAmount,
+      discountId: entity.discountId,
+      paymentMethod: entity.paymentMethod,
+      cancelledAt: entity.cancelledAt,
+      cancellationReason: entity.cancellationReason,
+      isRefunded: entity.isRefunded,
+      refundedAt: entity.refundedAt,
+      refundReason: entity.refundReason,
+    );
+  }
+
+  OrderEntity toEntity() {
+    return OrderEntity(
+      orderId: orderId,
+      studentId: studentId,
+      vendorId: vendorId,
+      items: items.map((item) => item.toEntity()).toList(),
+      totalAmount: totalAmount,
+      status: status,
+      pickupSlot: pickupSlot,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      specialInstructions: specialInstructions,
+      discountAmount: discountAmount,
+      discountId: discountId,
+      paymentMethod: paymentMethod,
+      cancelledAt: cancelledAt,
+      cancellationReason: cancellationReason,
+      isRefunded: isRefunded,
+      refundedAt: refundedAt,
+      refundReason: refundReason,
     );
   }
 
@@ -157,5 +258,10 @@ class OrderModel extends Equatable {
         discountAmount,
         discountId,
         paymentMethod,
+        cancelledAt,
+        cancellationReason,
+        isRefunded,
+        refundedAt,
+        refundReason,
       ];
 }

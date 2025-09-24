@@ -9,6 +9,9 @@ class PickupSlotModel {
   final int currentBookings;
   final int preparationTime;
   final bool isActive;
+  final bool isPeakHour;
+  final int peakHourMultiplier;
+  final List<String> queuedOrderIds;
 
   PickupSlotModel({
     required this.slotId,
@@ -19,6 +22,9 @@ class PickupSlotModel {
     required this.currentBookings,
     required this.preparationTime,
     required this.isActive,
+    this.isPeakHour = false,
+    this.peakHourMultiplier = 1,
+    this.queuedOrderIds = const [],
   });
 
   factory PickupSlotModel.fromEntity(PickupSlotEntity entity) {
@@ -31,6 +37,9 @@ class PickupSlotModel {
       currentBookings: entity.currentBookings,
       preparationTime: entity.preparationTime,
       isActive: entity.isActive,
+      isPeakHour: entity.isPeakHour,
+      peakHourMultiplier: entity.peakHourMultiplier,
+      queuedOrderIds: entity.queuedOrderIds,
     );
   }
 
@@ -44,6 +53,9 @@ class PickupSlotModel {
       currentBookings: currentBookings,
       preparationTime: preparationTime,
       isActive: isActive,
+      isPeakHour: isPeakHour,
+      peakHourMultiplier: peakHourMultiplier,
+      queuedOrderIds: queuedOrderIds,
     );
   }
 
@@ -57,6 +69,9 @@ class PickupSlotModel {
       'currentBookings': currentBookings,
       'preparationTime': preparationTime,
       'isActive': isActive,
+      'isPeakHour': isPeakHour,
+      'peakHourMultiplier': peakHourMultiplier,
+      'queuedOrderIds': queuedOrderIds,
     };
   }
 
@@ -70,6 +85,9 @@ class PickupSlotModel {
       currentBookings: json['currentBookings'],
       preparationTime: json['preparationTime'],
       isActive: json['isActive'],
+      isPeakHour: json['isPeakHour'] ?? false,
+      peakHourMultiplier: json['peakHourMultiplier'] ?? 1,
+      queuedOrderIds: List<String>.from(json['queuedOrderIds'] ?? []),
     );
   }
 
@@ -82,6 +100,9 @@ class PickupSlotModel {
     int? currentBookings,
     int? preparationTime,
     bool? isActive,
+    bool? isPeakHour,
+    int? peakHourMultiplier,
+    List<String>? queuedOrderIds,
   }) {
     return PickupSlotModel(
       slotId: slotId ?? this.slotId,
@@ -92,6 +113,9 @@ class PickupSlotModel {
       currentBookings: currentBookings ?? this.currentBookings,
       preparationTime: preparationTime ?? this.preparationTime,
       isActive: isActive ?? this.isActive,
+      isPeakHour: isPeakHour ?? this.isPeakHour,
+      peakHourMultiplier: peakHourMultiplier ?? this.peakHourMultiplier,
+      queuedOrderIds: queuedOrderIds ?? this.queuedOrderIds,
     );
   }
 }

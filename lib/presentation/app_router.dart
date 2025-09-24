@@ -50,7 +50,8 @@ class AppRouter {
       case '/student/wallet':
         return MaterialPageRoute(builder: (_) => const WalletScreen());
       case '/student/pickup-slot':
-        return MaterialPageRoute(builder: (_) => const PickupSlotScreen());
+        final vendorId = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => PickupSlotScreen(vendorId: vendorId));
       case '/student/feedback':
         final vendorId = settings.arguments as String;
         return MaterialPageRoute(builder: (_) => FeedbackScreen(vendorId: vendorId));

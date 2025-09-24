@@ -92,9 +92,13 @@ class GetOrderDetails extends OrderEvent {
 
 class CancelOrder extends OrderEvent {
   final String orderId;
+  final String? cancellationReason;
 
-  const CancelOrder({required this.orderId});
+  const CancelOrder({
+    required this.orderId,
+    this.cancellationReason,
+  });
 
   @override
-  List<Object> get props => [orderId];
+  List<Object> get props => [orderId, cancellationReason ?? ''];
 }

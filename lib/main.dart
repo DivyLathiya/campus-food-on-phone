@@ -79,6 +79,7 @@ class MyApp extends StatelessWidget {
               vendorRepository: context.read<MockVendorRepository>(),
               menuRepository: context.read<MockMenuRepository>(),
               userRepository: context.read<MockUserRepository>(),
+              pickupSlotRepository: context.read<MockPickupSlotRepository>(),
             ),
           ),
           BlocProvider(
@@ -90,6 +91,7 @@ class MyApp extends StatelessWidget {
             create: (context) => VendorOrderBloc.OrderBloc(
               orderRepository: context.read<MockOrderRepository>(),
               userRepository: context.read<MockUserRepository>(),
+              menuRepository: context.read<MockMenuRepository>(),
             ),
           ),
           BlocProvider(
