@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:campus_food_app/presentation/auth/bloc/auth_bloc.dart';
-import 'package:campus_food_app/presentation/vendor/bloc/order_bloc.dart';
+import 'package:campus_food_app/presentation/vendor/bloc/order_bloc.dart' as VendorOrderBloc;
 import 'package:campus_food_app/domain/entities/order_entity.dart';
 import 'package:campus_food_app/core/utils/app_theme.dart';
 
@@ -19,7 +19,7 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
     super.initState();
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticated) {
-      context.read<OrderBloc>().add(LoadOrders(vendorId: authState.userId));
+      context.read<VendorOrderBloc.OrderBloc>().add(VendorOrderBloc.LoadOrders(vendorId: authState.userId));
     }
   }
 
@@ -38,16 +38,16 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
             ],
           ),
         ),
-        body: BlocConsumer<OrderBloc, OrderState>(
+        body: BlocConsumer<VendorOrderBloc.OrderBloc, VendorOrderBloc.OrderState>(
           listener: (context, state) {
-            if (state is OrderOperationSuccess) {
+            if (state is VendorOrderBloc.OrderOperationSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
                   backgroundColor: AppTheme.successColor,
                 ),
               );
-            } else if (state is OrderError) {
+            } else if (state is VendorOrderBloc.OrderError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
@@ -57,18 +57,18 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
             }
           },
           builder: (context, state) {
-            if (state is OrderLoading) {
+            if (state is VendorOrderBloc.OrderLoading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is OrderLoaded || state is OrderOperationSuccess) {
+            } else if (state is VendorOrderBloc.OrderLoaded || state is VendorOrderBloc.OrderOperationSuccess) {
               List<OrderEntity> pendingOrders = [];
               List<OrderEntity> preparingOrders = [];
               List<OrderEntity> readyOrders = [];
 
-              if (state is OrderLoaded) {
+              if (state is VendorOrderBloc.OrderLoaded) {
                 pendingOrders = state.pendingOrders;
                 preparingOrders = state.preparingOrders;
                 readyOrders = state.readyOrders;
-              } else if (state is OrderOperationSuccess) {
+              } else if (state is VendorOrderBloc.OrderOperationSuccess) {
                 // For operation success, we need to categorize the orders
                 pendingOrders = _filterOrdersByStatus(state.orders, 'pending');
                 preparingOrders = _filterOrdersByStatus(state.orders, 'preparing');
@@ -82,7 +82,7 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
                   _buildOrderTab(context, readyOrders, 'ready'),
                 ],
               );
-            } else if (state is OrderError) {
+            } else if (state is VendorOrderBloc.OrderError) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +99,7 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
                       onPressed: () {
                         final authState = context.read<AuthBloc>().state;
                         if (authState is AuthAuthenticated) {
-                          context.read<OrderBloc>().add(LoadOrders(vendorId: authState.userId));
+                          context.read<VendorOrderBloc.OrderBloc>().add(VendorOrderBloc.LoadOrders(vendorId: authState.userId));
                         }
                       },
                       child: const Text('Retry'),
@@ -351,7 +351,7 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
             const SizedBox(width: 8),
             Expanded(
               child: ElevatedButton(
-                onPressed: () => context.read<OrderBloc>().add(AcceptOrder(orderId: order.orderId)),
+                onPressed: () => context.read<VendorOrderBloc.OrderBloc>().add(VendorOrderBloc.AcceptOrder(orderId: order.orderId)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.successColor,
                   foregroundColor: Colors.white,
@@ -366,7 +366,7 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: () => context.read<OrderBloc>().add(MarkOrderReady(orderId: order.orderId)),
+                onPressed: () => context.read<VendorOrderBloc.OrderBloc>().add(VendorOrderBloc.MarkOrderReady(orderId: order.orderId)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primaryColor,
                   foregroundColor: Colors.white,
@@ -415,7 +415,7 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
           ),
           ElevatedButton(
             onPressed: () {
-              context.read<OrderBloc>().add(RejectOrder(orderId: order.orderId));
+              context.read<VendorOrderBloc.OrderBloc>().add(VendorOrderBloc.RejectOrder(orderId: order.orderId));
               Navigator.pop(dialogContext);
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
