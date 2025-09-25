@@ -21,6 +21,9 @@ import 'package:campus_food_app/presentation/vendor/screens/menu_management_scre
 import 'package:campus_food_app/presentation/vendor/screens/order_management_screen.dart';
 import 'package:campus_food_app/presentation/vendor/screens/pickup_slot_control_screen.dart';
 import 'package:campus_food_app/presentation/vendor/screens/sales_reports_screen.dart';
+import 'package:campus_food_app/presentation/admin/screens/admin_message_screen.dart';
+import 'package:campus_food_app/presentation/student/screens/notification_screen.dart';
+import 'package:campus_food_app/domain/entities/user_entity.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -55,6 +58,9 @@ class AppRouter {
       case '/student/feedback':
         final vendorId = settings.arguments as String;
         return MaterialPageRoute(builder: (_) => FeedbackScreen(vendorId: vendorId));
+      case '/student/notifications':
+        final user = settings.arguments as UserEntity;
+        return MaterialPageRoute(builder: (_) => NotificationScreen(user: user));
       case '/vendor/home':
         return MaterialPageRoute(builder: (_) => const vendor.VendorHomeScreen());
       case '/vendor/discounts':
@@ -71,6 +77,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => SalesReportsScreen(vendorId: vendorId));
       case '/admin/home':
         return MaterialPageRoute(builder: (_) => const admin.AdminHomeScreen());
+      case '/admin/messages':
+        return MaterialPageRoute(builder: (_) => const AdminMessageScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

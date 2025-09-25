@@ -2,14 +2,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:campus_food_app/domain/entities/discount_entity.dart';
 import 'package:campus_food_app/domain/repositories/discount_repository.dart';
+import 'package:campus_food_app/domain/repositories/notification_repository.dart';
+import 'package:campus_food_app/domain/repositories/user_repository.dart';
 
 part 'discount_event.dart';
 part 'discount_state.dart';
 
 class DiscountBloc extends Bloc<DiscountEvent, DiscountState> {
   final DiscountRepository discountRepository;
+  final NotificationRepository notificationRepository;
+  final UserRepository userRepository;
 
-  DiscountBloc({required this.discountRepository}) : super(DiscountInitial()) {
+  DiscountBloc({
+    required this.discountRepository,
+    required this.notificationRepository,
+    required this.userRepository,
+  }) : super(DiscountInitial()) {
     on<LoadDiscounts>(_onLoadDiscounts);
     on<AddDiscount>(_onAddDiscount);
     on<UpdateDiscount>(_onUpdateDiscount);
@@ -48,7 +56,10 @@ class DiscountBloc extends Bloc<DiscountEvent, DiscountState> {
         isActive: true,
       );
 
-      await discountRepository.createDiscount(newDiscount);
+      final createdDiscount = await discountRepository.createDiscount(newDiscount);
+      
+      // Send promotional notification to all users
+      await _sendPromotionalNotification(createdDiscount, 'new');
       
       // Reload discounts
       final discounts = await discountRepository.getDiscountsByVendor(event.vendorId);
@@ -78,7 +89,12 @@ class DiscountBloc extends Bloc<DiscountEvent, DiscountState> {
           isActive: event.isActive,
         );
 
-        await discountRepository.updateDiscount(updatedDiscount);
+        final updatedDiscountEntity = await discountRepository.updateDiscount(updatedDiscount);
+        
+        // Send promotional notification if discount was activated
+        if (updatedDiscountEntity.isActive && !existingDiscount.isActive) {
+          await _sendPromotionalNotification(updatedDiscountEntity, 'activated');
+        }
         
         // Reload discounts
         final discounts = await discountRepository.getDiscountsByVendor(existingDiscount.vendorId);
@@ -121,7 +137,12 @@ class DiscountBloc extends Bloc<DiscountEvent, DiscountState> {
       final discount = await discountRepository.getDiscountById(event.discountId);
       if (discount != null) {
         final updatedDiscount = discount.copyWith(isActive: event.isActive);
-        await discountRepository.updateDiscount(updatedDiscount);
+        final updatedDiscountEntity = await discountRepository.updateDiscount(updatedDiscount);
+        
+        // Send promotional notification if discount was activated
+        if (updatedDiscountEntity.isActive && !discount.isActive) {
+          await _sendPromotionalNotification(updatedDiscountEntity, 'activated');
+        }
         
         // Reload discounts
         final discounts = await discountRepository.getDiscountsByVendor(discount.vendorId);
@@ -132,5 +153,89 @@ class DiscountBloc extends Bloc<DiscountEvent, DiscountState> {
     } catch (e) {
       emit(DiscountError(message: 'Failed to toggle discount status: ${e.toString()}'));
     }
+  }
+
+  Future<void> _sendPromotionalNotification(DiscountEntity discount, String actionType) async {
+    try {
+      // Get all users for broadcasting
+      final allUsers = await userRepository.getAllUsers();
+      final userIds = allUsers.map((user) => user.userId).toList();
+      
+      String title;
+      String message;
+      
+      switch (actionType) {
+        case 'new':
+          title = 'New Discount Available!';
+          message = _buildNewDiscountMessage(discount);
+          break;
+        case 'activated':
+          title = 'Discount Activated!';
+          message = _buildActivatedDiscountMessage(discount);
+          break;
+        default:
+          title = 'Special Offer';
+          message = 'Check out the latest discounts from your favorite vendors!';
+      }
+      
+      // Broadcast promotional alert to all users
+      await notificationRepository.broadcastPromotionalAlert(
+        userIds,
+        discount.vendorId,
+        title,
+        message,
+      );
+    } catch (e) {
+      // Log error but don't fail the discount operation
+      print('Failed to send promotional notification: ${e.toString()}');
+    }
+  }
+
+  String _buildNewDiscountMessage(DiscountEntity discount) {
+    String discountText;
+    if (discount.type == 'percentage') {
+      discountText = '${discount.value.toStringAsFixed(0)}% OFF';
+    } else {
+      discountText = '₹${discount.value.toStringAsFixed(0)} OFF';
+    }
+    
+    String message = '🎉 New discount: $discountText on all orders!';
+    
+    if (discount.minOrderAmount != null) {
+      message += ' Minimum order: ₹${discount.minOrderAmount!.toStringAsFixed(0)}';
+    }
+    
+    if (discount.startDate != null && discount.endDate != null) {
+      message += ' Valid from ${_formatDate(discount.startDate!)} to ${_formatDate(discount.endDate!)}';
+    } else if (discount.endDate != null) {
+      message += ' Valid until ${_formatDate(discount.endDate!)}';
+    }
+    
+    return message;
+  }
+
+  String _buildActivatedDiscountMessage(DiscountEntity discount) {
+    String discountText;
+    if (discount.type == 'percentage') {
+      discountText = '${discount.value.toStringAsFixed(0)}% OFF';
+    } else {
+      discountText = '₹${discount.value.toStringAsFixed(0)} OFF';
+    }
+    
+    String message = '✨ Discount activated: $discountText is now available!';
+    
+    if (discount.minOrderAmount != null) {
+      message += ' Minimum order: ₹${discount.minOrderAmount!.toStringAsFixed(0)}';
+    }
+    
+    if (discount.endDate != null) {
+      message += ' Hurry, valid until ${_formatDate(discount.endDate!)}';
+    }
+    
+    return message;
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
   }
 }

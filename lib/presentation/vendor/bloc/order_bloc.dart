@@ -4,6 +4,7 @@ import 'package:campus_food_app/domain/entities/order_entity.dart';
 import 'package:campus_food_app/domain/repositories/order_repository.dart';
 import 'package:campus_food_app/domain/repositories/user_repository.dart';
 import 'package:campus_food_app/domain/repositories/menu_repository.dart';
+import 'package:campus_food_app/domain/repositories/notification_repository.dart';
 
 part 'order_event.dart';
 part 'order_state.dart';
@@ -12,11 +13,13 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final OrderRepository orderRepository;
   final UserRepository userRepository;
   final MenuRepository menuRepository;
+  final NotificationRepository notificationRepository;
 
   OrderBloc({
     required this.orderRepository, 
     required this.userRepository,
     required this.menuRepository,
+    required this.notificationRepository,
   }) : super(OrderInitial()) {
     on<LoadOrders>(_onLoadOrders);
     on<UpdateOrderStatus>(_onUpdateOrderStatus);
@@ -145,6 +148,15 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           orders: updatedOrders,
         ));
         
+        // Send order accepted notification to student
+        await notificationRepository.sendOrderStatusNotification(
+          order.studentId,
+          order.orderId,
+          'accepted',
+          'Order Accepted',
+          'Your order #${order.orderId} has been accepted and is being prepared.',
+        );
+        
         // Transition back to loaded state with updated orders
         emit(OrderLoaded(
           orders: updatedOrders,
@@ -206,6 +218,20 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           message += ' and refund processed';
         }
 
+        // Send order rejected notification to student
+        String notificationMessage = 'Your order #${order.orderId} has been rejected by the vendor.';
+        if (order.paymentMethod == 'wallet') {
+          notificationMessage += ' A refund of ₹${refundAmount.toStringAsFixed(2)} has been processed to your wallet.';
+        }
+        
+        await notificationRepository.sendOrderStatusNotification(
+          order.studentId,
+          order.orderId,
+          'rejected',
+          'Order Rejected',
+          notificationMessage,
+        );
+        
         emit(OrderOperationSuccess(
           message: message,
           orders: updatedOrders,
@@ -272,6 +298,21 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         final preparingOrders = _filterOrdersByStatus(updatedOrders, 'preparing');
         final readyOrders = _filterOrdersByStatus(updatedOrders, 'ready');
 
+        // Find the order to send notification
+        final order = currentState.orders.firstWhere(
+          (order) => order.orderId == event.orderId,
+          orElse: () => throw Exception('Order not found'),
+        );
+        
+        // Send order ready notification to student
+        await notificationRepository.sendOrderStatusNotification(
+          order.studentId,
+          order.orderId,
+          'ready',
+          'Order Ready for Pickup',
+          'Your order #${order.orderId} is ready for pickup! Please collect it at your scheduled time.',
+        );
+        
         emit(OrderOperationSuccess(
           message: 'Order marked as ready for pickup',
           orders: updatedOrders,
