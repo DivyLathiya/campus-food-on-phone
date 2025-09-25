@@ -14,6 +14,9 @@ import 'package:campus_food_app/presentation/vendor/bloc/discount_bloc.dart';
 import 'package:campus_food_app/presentation/vendor/bloc/enhanced_discount_bloc.dart';
 import 'package:campus_food_app/presentation/vendor/bloc/pickup_slot_bloc.dart';
 import 'package:campus_food_app/presentation/admin/bloc/admin_message_bloc.dart';
+import 'package:campus_food_app/presentation/admin/bloc/vendor_management_bloc.dart';
+import 'package:campus_food_app/presentation/admin/bloc/analytics_dashboard_bloc.dart';
+import 'package:campus_food_app/presentation/admin/bloc/complaint_management_bloc.dart';
 import 'package:campus_food_app/data/repositories/mock_vendor_repository.dart';
 import 'package:campus_food_app/data/repositories/mock_order_repository.dart';
 import 'package:campus_food_app/data/repositories/mock_menu_repository.dart';
@@ -23,6 +26,8 @@ import 'package:campus_food_app/data/repositories/mock_discount_repository.dart'
 import 'package:campus_food_app/data/repositories/mock_enhanced_discount_repository.dart';
 import 'package:campus_food_app/data/repositories/mock_pickup_slot_repository.dart';
 import 'package:campus_food_app/data/repositories/mock_notification_repository.dart';
+import 'package:campus_food_app/data/repositories/mock_analytics_repository.dart';
+import 'package:campus_food_app/data/repositories/mock_complaint_repository.dart';
 
 void main() {
   runApp(const MyApp());
@@ -64,6 +69,12 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider(
           create: (context) => MockNotificationRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => MockAnalyticsRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => MockComplaintRepository(),
         ),
       ],
       child: MultiBlocProvider(
@@ -132,6 +143,21 @@ class MyApp extends StatelessWidget {
             create: (context) => AdminMessageBloc(
               notificationRepository: context.read<MockNotificationRepository>(),
               userRepository: context.read<MockUserRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => VendorManagementBloc(
+              vendorRepository: context.read<MockVendorRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => AnalyticsDashboardBloc(
+              analyticsRepository: context.read<MockAnalyticsRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => ComplaintManagementBloc(
+              complaintRepository: context.read<MockComplaintRepository>(),
             ),
           ),
         ],

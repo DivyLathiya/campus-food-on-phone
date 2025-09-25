@@ -114,7 +114,7 @@ class AdminHomeScreen extends StatelessWidget {
                           title: 'Manage Vendors',
                           subtitle: 'Approve & view vendors',
                           onTap: () {
-                            // TODO: Navigate to vendor management
+                            Navigator.of(context).pushNamed('/admin/vendors');
                           },
                         ),
                         _buildQuickActionCard(
@@ -124,6 +124,12 @@ class AdminHomeScreen extends StatelessWidget {
                           subtitle: 'View users',
                           onTap: () {
                             // TODO: Navigate to user management
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('User management coming soon!'),
+                                backgroundColor: AppTheme.primaryColor,
+                              ),
+                            );
                           },
                         ),
                         _buildQuickActionCard(
@@ -132,7 +138,7 @@ class AdminHomeScreen extends StatelessWidget {
                           title: 'System Analytics',
                           subtitle: 'View analytics',
                           onTap: () {
-                            // TODO: Navigate to sales reports
+                            Navigator.of(context).pushNamed('/admin/analytics');
                           },
                         ),
                         _buildQuickActionCard(
@@ -141,7 +147,7 @@ class AdminHomeScreen extends StatelessWidget {
                           title: 'Feedback',
                           subtitle: 'View user feedback',
                           onTap: () {
-                            // TODO: Navigate to feedback management
+                            Navigator.of(context).pushNamed('/admin/complaints');
                           },
                         ),
                         _buildQuickActionCard(
