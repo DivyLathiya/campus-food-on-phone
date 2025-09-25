@@ -46,7 +46,7 @@ class PickupSlotBloc extends Bloc<PickupSlotEvent, PickupSlotState> {
         isActive: event.isActive,
       );
 
-      final addedSlot = await pickupSlotRepository.addPickupSlot(newSlot);
+      await pickupSlotRepository.addPickupSlot(newSlot);
       final updatedSlots = await pickupSlotRepository.getPickupSlotsByVendor(event.vendorId);
       
       emit(PickupSlotOperationSuccess(

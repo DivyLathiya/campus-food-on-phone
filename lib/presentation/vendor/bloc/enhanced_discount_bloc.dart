@@ -106,7 +106,7 @@ class EnhancedDiscountBloc extends Bloc<EnhancedDiscountEvent, EnhancedDiscountS
         return;
       }
 
-      final addedDiscount = await enhancedDiscountRepository.addDiscount(newDiscount);
+      await enhancedDiscountRepository.addDiscount(newDiscount);
       final updatedDiscounts = await enhancedDiscountRepository.getDiscountsByVendor(event.vendorId);
       
       emit(EnhancedDiscountOperationSuccess(
