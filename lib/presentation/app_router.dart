@@ -22,6 +22,7 @@ import 'package:campus_food_app/presentation/vendor/screens/order_management_scr
 import 'package:campus_food_app/presentation/vendor/screens/pickup_slot_control_screen.dart';
 import 'package:campus_food_app/presentation/vendor/screens/sales_reports_screen.dart';
 import 'package:campus_food_app/presentation/admin/screens/admin_message_screen.dart';
+import 'package:campus_food_app/presentation/admin/screens/vendor_management_screen.dart';
 import 'package:campus_food_app/presentation/student/screens/notification_screen.dart';
 import 'package:campus_food_app/domain/entities/user_entity.dart';
 
@@ -79,6 +80,48 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const admin.AdminHomeScreen());
       case '/admin/messages':
         return MaterialPageRoute(builder: (_) => const AdminMessageScreen());
+      case '/admin/vendors':
+        return MaterialPageRoute(builder: (_) => const VendorManagementScreen());
+      case '/admin/analytics':
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.analytics, size: 64, color: Colors.blue),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Analytics Dashboard',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text('Analytics dashboard coming soon!'),
+                ],
+              ),
+            ),
+          ),
+        );
+      case '/admin/complaints':
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.feedback, size: 64, color: Colors.orange),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Complaint Management',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text('Complaint management coming soon!'),
+                ],
+              ),
+            ),
+          ),
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
