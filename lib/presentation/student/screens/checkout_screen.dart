@@ -120,7 +120,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               if (walletState is! WalletBalanceLoaded) {
                 return const Center(child: CircularProgressIndicator());
               }
-              return Padding(
+              return SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -140,25 +140,106 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             const SizedBox(height: 16),
                             ...orderState.cartItems.map(
-                                  (item) => ListTile(
-                                title: Text(item.menuItem.name),
-                                trailing: Text(
-                                    '₹${(item.menuItem.price * item.quantity).toStringAsFixed(2)}'),
+                                  (item) => Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.menuItem.name,
+                                            style: const TextStyle(fontWeight: FontWeight.w500),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          if (item.quantity > 1)
+                                            Text(
+                                              'Qty: ${item.quantity}',
+                                              style: TextStyle(
+                                                color: Colors.grey[600],
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Text(
+                                      '₹${(item.menuItem.price * item.quantity).toStringAsFixed(2)}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             ListTile(
                               title: const Text( 'Subtotal'),
                               trailing: Text('₹${orderState.totalAmount.toStringAsFixed(2)}'),
                             ),
-                            if (discountAmount > 0 && appliedDiscount != null) ListTile(
-                              title: Text('Discount ${appliedDiscount.type == 'percentage' ? '(${appliedDiscount.value.toStringAsFixed(0)}%)' : appliedDiscount.type == 'wallet_only' ? '(Wallet Only)' : ''}'),
-                              subtitle: Text(appliedDiscount.description),
-                              trailing: Text('- ₹${discountAmount.toStringAsFixed(2)}', style: const TextStyle(color: AppTheme.successColor)),
-                            ) else
-                            ListTile(
-                              title: const Text('Discount'),
-                              trailing: Text(_selectedPaymentMethod == 'wallet' ? 'No wallet discount available' : 'No discount available', style: const TextStyle(color: Colors.grey)),
-                            ),
+                            if (discountAmount > 0 && appliedDiscount != null)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Discount ${appliedDiscount.type == 'percentage' ? '(${appliedDiscount.value.toStringAsFixed(0)}%)' : appliedDiscount.type == 'wallet_only' ? '(Wallet Only)' : ''}',
+                                            style: const TextStyle(fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            appliedDiscount.description,
+                                            style: TextStyle(
+                                              color: Colors.grey[600],
+                                              fontSize: 12,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Text(
+                                      '- ₹${discountAmount.toStringAsFixed(2)}',
+                                      style: const TextStyle(
+                                        color: AppTheme.successColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            else
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Discount',
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Text(
+                                      _selectedPaymentMethod == 'wallet' ? 'No wallet discount available' : 'No discount available',
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             const Divider(),
                             ListTile(
                               title: const Text(
@@ -264,7 +345,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                       ),
                     ),
-                    const Spacer(),
+                    const SizedBox(height: 16),
                     if (orderState is OrderLoading)
                       const Center(child: CircularProgressIndicator())
                     else
