@@ -102,64 +102,66 @@ class AdminHomeScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    GridView.count(
-                      shrinkWrap: true,
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      children: [
-                        _buildQuickActionCard(
-                          context,
-                          icon: Icons.store,
-                          title: 'Manage Vendors',
-                          subtitle: 'Approve & view vendors',
-                          onTap: () {
-                            Navigator.of(context).pushNamed('/admin/vendors');
-                          },
-                        ),
-                        _buildQuickActionCard(
-                          context,
-                          icon: Icons.people,
-                          title: 'Manage Users',
-                          subtitle: 'View users',
-                          onTap: () {
-                            // TODO: Navigate to user management
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('User management coming soon!'),
-                                backgroundColor: AppTheme.primaryColor,
-                              ),
-                            );
-                          },
-                        ),
-                        _buildQuickActionCard(
-                          context,
-                          icon: Icons.analytics,
-                          title: 'System Analytics',
-                          subtitle: 'View analytics',
-                          onTap: () {
-                            Navigator.of(context).pushNamed('/admin/analytics');
-                          },
-                        ),
-                        _buildQuickActionCard(
-                          context,
-                          icon: Icons.feedback,
-                          title: 'Feedback',
-                          subtitle: 'View user feedback',
-                          onTap: () {
-                            Navigator.of(context).pushNamed('/admin/complaints');
-                          },
-                        ),
-                        _buildQuickActionCard(
-                          context,
-                          icon: Icons.notifications,
-                          title: 'Send Messages',
-                          subtitle: 'Send admin messages',
-                          onTap: () {
-                            Navigator.of(context).pushNamed('/admin/messages');
-                          },
-                        ),
-                      ],
+                    Expanded(
+                      child: GridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        children: [
+                          _buildQuickActionCard(
+                            context,
+                            icon: Icons.store,
+                            title: 'Manage Vendors',
+                            subtitle: 'Approve & view vendors',
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/admin/vendors');
+                            },
+                          ),
+                          _buildQuickActionCard(
+                            context,
+                            icon: Icons.people,
+                            title: 'Manage Users',
+                            subtitle: 'View users',
+                            onTap: () {
+                              // TODO: Navigate to user management
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('User management coming soon!'),
+                                  backgroundColor: AppTheme.primaryColor,
+                                ),
+                              );
+                            },
+                          ),
+                          _buildQuickActionCard(
+                            context,
+                            icon: Icons.analytics,
+                            title: 'System Analytics',
+                            subtitle: 'View analytics',
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/admin/analytics');
+                            },
+                          ),
+                          _buildQuickActionCard(
+                            context,
+                            icon: Icons.feedback,
+                            title: 'Feedback',
+                            subtitle: 'View user feedback',
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/admin/complaints');
+                            },
+                          ),
+                          _buildQuickActionCard(
+                            context,
+                            icon: Icons.notifications,
+                            title: 'Send Messages',
+                            subtitle: 'Send admin messages',
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/admin/messages');
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

@@ -308,52 +308,55 @@ class _VendorManagementViewState extends State<VendorManagementView>
   }
 
   Widget _buildActionButtons(BuildContext context, EnhancedVendorEntity vendor) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        if (vendor.isPendingApproval)
-          ElevatedButton.icon(
-            onPressed: () => _showApproveDialog(context, vendor),
-            icon: const Icon(Icons.check),
-            label: const Text('Approve'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-          ),
-        if (vendor.isPendingApproval)
-          ElevatedButton.icon(
-            onPressed: () => _showRejectDialog(context, vendor),
-            icon: const Icon(Icons.close),
-            label: const Text('Reject'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-          ),
-        if (vendor.isKycPending && !vendor.isPendingApproval)
-          ElevatedButton.icon(
-            onPressed: () => _showVerifyKYCDialog(context, vendor),
-            icon: const Icon(Icons.verified),
-            label: const Text('Verify KYC'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-          ),
-        if (vendor.isKycPending && !vendor.isPendingApproval)
-          ElevatedButton.icon(
-            onPressed: () => _showRejectKYCDialog(context, vendor),
-            icon: const Icon(Icons.cancel),
-            label: const Text('Reject KYC'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-          ),
-        if (vendor.isActive)
-          ElevatedButton.icon(
-            onPressed: () => _showSuspendDialog(context, vendor),
-            icon: const Icon(Icons.pause),
-            label: const Text('Suspend'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-          ),
-        if (vendor.status == 'suspended')
-          ElevatedButton.icon(
-            onPressed: () => _showReactivateDialog(context, vendor),
-            icon: const Icon(Icons.play_arrow),
-            label: const Text('Reactivate'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-          ),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          if (vendor.isPendingApproval)
+            ElevatedButton.icon(
+              onPressed: () => _showApproveDialog(context, vendor),
+              icon: const Icon(Icons.check),
+              label: const Text('Approve'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            ),
+          if (vendor.isPendingApproval)
+            ElevatedButton.icon(
+              onPressed: () => _showRejectDialog(context, vendor),
+              icon: const Icon(Icons.close),
+              label: const Text('Reject'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            ),
+          if (vendor.isKycPending && !vendor.isPendingApproval)
+            ElevatedButton.icon(
+              onPressed: () => _showVerifyKYCDialog(context, vendor),
+              icon: const Icon(Icons.verified),
+              label: const Text('Verify KYC'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+            ),
+          if (vendor.isKycPending && !vendor.isPendingApproval)
+            ElevatedButton.icon(
+              onPressed: () => _showRejectKYCDialog(context, vendor),
+              icon: const Icon(Icons.cancel),
+              label: const Text('Reject KYC'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+            ),
+          if (vendor.isActive)
+            ElevatedButton.icon(
+              onPressed: () => _showSuspendDialog(context, vendor),
+              icon: const Icon(Icons.pause),
+              label: const Text('Suspend'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+            ),
+          if (vendor.status == 'suspended')
+            ElevatedButton.icon(
+              onPressed: () => _showReactivateDialog(context, vendor),
+              icon: const Icon(Icons.play_arrow),
+              label: const Text('Reactivate'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            ),
+        ],
+      ),
     );
   }
 
