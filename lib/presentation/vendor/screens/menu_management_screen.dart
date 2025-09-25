@@ -4,7 +4,6 @@ import 'package:campus_food_app/presentation/auth/bloc/auth_bloc.dart';
 import 'package:campus_food_app/presentation/vendor/bloc/menu_bloc.dart';
 import 'package:campus_food_app/domain/entities/menu_item_entity.dart';
 import 'package:campus_food_app/core/utils/app_theme.dart';
-import 'package:campus_food_app/core/utils/app_constants.dart';
 
 class MenuManagementScreen extends StatefulWidget {
   const MenuManagementScreen({super.key});
@@ -90,7 +89,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
               itemCount: categories.length,
               itemBuilder: (context, index) {
                 final category = categories.keys.elementAt(index);
-                final items = categories[category]!;
+                final items = categories[category] ?? [];
                 return _buildCategorySection(context, category, items);
               },
             );
@@ -134,7 +133,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
       if (!grouped.containsKey(category)) {
         grouped[category] = [];
       }
-      grouped[category]!.add(item);
+      grouped[category]?.add(item);
     }
     
     return grouped;
@@ -460,7 +459,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                     if (isEditing) {
                       context.read<MenuBloc>().add(
                         UpdateMenuItem(
-                          menuItemId: item!.menuItemId,
+                          menuItemId: item.menuItemId,
                           name: name,
                           description: description,
                           price: price,

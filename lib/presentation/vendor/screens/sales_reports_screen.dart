@@ -220,7 +220,7 @@ class _SalesReportsScreenState extends State<SalesReportsScreen> with TickerProv
             Expanded(
               child: _buildMetricCard(
                 'Total Revenue',
-                '\$${summary['totalRevenue']?.toStringAsFixed(2) ?? '0.00'}',
+                '\$${summary['totalRevenue'].toStringAsFixed(2)}',
                 Icons.attach_money,
                 Colors.green,
               ),
@@ -242,7 +242,7 @@ class _SalesReportsScreenState extends State<SalesReportsScreen> with TickerProv
             Expanded(
               child: _buildMetricCard(
                 'Avg Order Value',
-                '\$${summary['averageOrderValue']?.toStringAsFixed(2) ?? '0.00'}',
+                '\$${summary['averageOrderValue'].toStringAsFixed(2)}',
                 Icons.receipt_long,
                 Colors.purple,
               ),
@@ -890,7 +890,7 @@ class _SalesReportsScreenState extends State<SalesReportsScreen> with TickerProv
 
   Widget _buildAnalyticsContent(List<HourlySalesEntity> hourlySales) {
     final peakHour = hourlySales.fold(0, (peak, item) => 
-      item.orderCount > (hourlySales[peak]?.orderCount ?? 0) ? hourlySales.indexOf(item) : peak);
+      item.orderCount > hourlySales[peak].orderCount ? hourlySales.indexOf(item) : peak);
     
     final totalOrders = hourlySales.fold(0, (sum, item) => sum + item.orderCount);
     final totalRevenue = hourlySales.fold(0.0, (sum, item) => sum + item.revenue);
