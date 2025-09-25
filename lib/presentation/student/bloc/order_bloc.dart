@@ -7,6 +7,7 @@ import 'package:campus_food_app/domain/repositories/order_repository.dart';
 import 'package:campus_food_app/domain/repositories/vendor_repository.dart';
 import 'package:campus_food_app/domain/repositories/menu_repository.dart';
 import 'package:campus_food_app/domain/repositories/user_repository.dart';
+import 'package:campus_food_app/domain/repositories/pickup_slot_repository.dart';
 
 part 'order_event.dart';
 part 'order_state.dart';
@@ -16,12 +17,14 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final VendorRepository vendorRepository;
   final MenuRepository menuRepository;
   final UserRepository userRepository;
+  final PickupSlotRepository pickupSlotRepository;
 
   OrderBloc({
     required this.orderRepository,
     required this.vendorRepository,
     required this.menuRepository,
     required this.userRepository,
+    required this.pickupSlotRepository,
   }) : super(const OrderInitial()) {
     on<LoadVendors>(_onLoadVendors);
     on<LoadVendorMenu>(_onLoadVendorMenu);
@@ -165,13 +168,64 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       if (currentState is VendorMenuLoaded &&
           currentState.cartItems.isNotEmpty) {
         final user = await userRepository.getUserById(event.userId);
-        if (user != null &&
-            user.walletBalance >= currentState.totalAmount) {
-          await userRepository.withdrawFromWallet(
-            event.userId,
-            currentState.totalAmount,
-            'Order Payment',
+        bool canPlaceOrder = false;
+        
+        if (event.paymentMethod == 'wallet') {
+          if (user != null && user.walletBalance >= currentState.totalAmount) {
+            await userRepository.withdrawFromWallet(
+              event.userId,
+              currentState.totalAmount,
+              'Order Payment',
+            );
+            canPlaceOrder = true;
+          }
+        } else {
+          // For other payment methods, assume payment is successful
+          canPlaceOrder = true;
+        }
+        
+        if (canPlaceOrder) {
+          // Find the best slot for the order
+          final optimalSlots = await pickupSlotRepository.getOptimalSlotsForOrder(
+            currentState.vendorId,
+            event.pickupTime,
+            currentState.cartItems.fold(0, (sum, item) => sum + item.quantity),
           );
+          
+          if (optimalSlots.isEmpty) {
+            emit(const OrderError(
+              message: 'No available pickup slots for the selected time. Please choose a different time.'
+            ));
+            return;
+          }
+          
+          // Use the first optimal slot
+          final selectedSlot = optimalSlots.first;
+          
+          // Check if slot has capacity
+          if (!selectedSlot.canAcceptMoreOrders) {
+            // Add to queue if slot is full
+            final queueSuccess = await pickupSlotRepository.addToQueue(
+              selectedSlot.slotId,
+              'temp_order_${DateTime.now().millisecondsSinceEpoch}',
+            );
+            
+            if (!queueSuccess) {
+              emit(const OrderError(
+                message: 'Selected pickup slot is full and queue is unavailable. Please choose a different time.'
+              ));
+              return;
+            }
+          }
+          
+          // Book the slot
+          final bookingSuccess = await pickupSlotRepository.bookSlot(selectedSlot.slotId);
+          if (!bookingSuccess) {
+            emit(const OrderError(
+              message: 'Failed to book pickup slot. Please try again.'
+            ));
+            return;
+          }
 
           // Convert cart items to order items
           final orderItems =
@@ -191,9 +245,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
             items: orderItems,
             totalAmount: totalAmount,
             status: 'pending',
-            pickupSlot: event.pickupTime,
+            pickupSlot: selectedSlot.startTime,
             createdAt: DateTime.now(),
             specialInstructions: event.specialInstructions,
+            paymentMethod: event.paymentMethod,
           );
 
           final createdOrder = await orderRepository.createOrder(order);
@@ -249,13 +304,60 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       ) async {
     emit(const OrderLoading());
     try {
-      final order = await orderRepository.updateOrderStatus(
-        event.orderId,
-        'cancelled',
+      // First get the order details to check cancellation eligibility
+      final order = await orderRepository.getOrderById(event.orderId);
+      if (order == null) {
+        emit(const OrderError(message: 'Order not found'));
+        return;
+      }
+      
+      // Check if order can be cancelled
+      if (!order.canBeCancelled) {
+        emit(OrderError(message: order.cancellationStatusMessage));
+        return;
+      }
+      
+      // Calculate refund amount
+      final refundAmount = order.refundAmount;
+      
+      // Process refund if applicable
+      if (refundAmount > 0 && order.paymentMethod == 'wallet') {
+        await userRepository.addFundsToWallet(
+          order.studentId,
+          refundAmount,
+          'Refund for cancelled order ${order.orderId}${refundAmount < order.totalAmount ? ' (partial refund)' : ''}',
+        );
+      }
+      
+      // Update order status and cancellation details
+      final updatedOrder = order.copyWith(
+        status: 'cancelled',
+        cancelledAt: DateTime.now(),
+        cancellationReason: event.cancellationReason,
+        isRefunded: refundAmount > 0,
+        refundedAt: refundAmount > 0 ? DateTime.now() : null,
+        refundReason: refundAmount > 0 ? 'Order cancelled by student' : null,
       );
-      emit(OrderCancelled(order: order));
+      
+      // Save the updated order
+      await orderRepository.updateOrder(updatedOrder);
+      
+      String message = 'Order cancelled successfully';
+      if (refundAmount > 0) {
+        if (order.paymentMethod == 'wallet') {
+          if (refundAmount == order.totalAmount) {
+            message += ' and full refund processed to wallet';
+          } else {
+            message += ' and partial refund (${(refundAmount / order.totalAmount * 100).round()}%) processed to wallet';
+          }
+        } else {
+          message += ' (refund available for non-wallet payments - contact support)';
+        }
+      }
+      
+      emit(OrderCancelled(order: updatedOrder, message: message));
     } catch (e) {
-      emit(OrderError(message: e.toString()));
+      emit(OrderError(message: 'Failed to cancel order: ${e.toString()}'));
     }
   }
 }

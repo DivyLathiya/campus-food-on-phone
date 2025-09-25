@@ -11,6 +11,9 @@ class MenuItemEntity extends Equatable {
   final String? category;
   final int? preparationTime;
   final List<String>? tags;
+  final int? stockQuantity;
+  final bool? isOutOfStock;
+  final DateTime? lastStockUpdate;
 
   const MenuItemEntity({
     required this.menuItemId,
@@ -23,6 +26,9 @@ class MenuItemEntity extends Equatable {
     this.category,
     this.preparationTime,
     this.tags,
+    this.stockQuantity,
+    this.isOutOfStock,
+    this.lastStockUpdate,
   });
 
   @override
@@ -38,6 +44,13 @@ class MenuItemEntity extends Equatable {
       category,
       preparationTime,
       tags,
+      stockQuantity,
+      isOutOfStock,
+      lastStockUpdate,
     ];
   }
+  
+  bool get isInStock => (isOutOfStock == null || !isOutOfStock!) && (stockQuantity == null || stockQuantity! > 0);
+  
+  bool get hasLowStock => stockQuantity != null && stockQuantity! > 0 && stockQuantity! <= 5;
 }

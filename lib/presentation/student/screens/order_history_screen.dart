@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:campus_food_app/presentation/auth/bloc/auth_bloc.dart';
 import 'package:campus_food_app/core/utils/app_theme.dart';
-import 'package:campus_food_app/domain/entities/order_entity.dart';
 import 'package:campus_food_app/presentation/student/bloc/order_bloc.dart';
 import 'package:intl/intl.dart';
 

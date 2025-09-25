@@ -4,7 +4,11 @@ import 'package:campus_food_app/data/models/menu_item_model.dart';
 import 'package:campus_food_app/data/models/discount_model.dart';
 import 'package:campus_food_app/data/models/order_model.dart';
 import 'package:campus_food_app/data/models/transaction_model.dart';
+import 'package:campus_food_app/data/models/enhanced_discount_model.dart';
+import 'package:campus_food_app/data/models/pickup_slot_model.dart';
+import 'package:campus_food_app/data/models/sales_report_model.dart';
 import 'package:campus_food_app/core/utils/app_constants.dart';
+import 'package:campus_food_app/domain/entities/enhanced_discount_entity.dart';
 
 class MockDataSource {
   // Mock Users
@@ -216,6 +220,7 @@ class MockDataSource {
       pickupSlot: DateTime.now().subtract(const Duration(hours: 2)),
       createdAt: DateTime.now().subtract(const Duration(hours: 3)),
       updatedAt: DateTime.now().subtract(const Duration(hours: 2)),
+      paymentMethod: 'wallet',
     ),
     OrderModel(
       orderId: 'order_2',
@@ -234,6 +239,7 @@ class MockDataSource {
       pickupSlot: DateTime.now().add(const Duration(minutes: 30)),
       createdAt: DateTime.now().subtract(const Duration(minutes: 15)),
       updatedAt: DateTime.now().subtract(const Duration(minutes: 10)),
+      paymentMethod: 'other',
     ),
   ];
 
@@ -266,6 +272,187 @@ class MockDataSource {
       status: AppConstants.transactionSuccess,
       createdAt: DateTime.now().subtract(const Duration(days: 2)),
       description: 'Wallet top-up',
+    ),
+  ];
+
+  // Mock Enhanced Discounts
+  static final List<EnhancedDiscountModel> enhancedDiscounts = [
+    EnhancedDiscountModel(
+      discountId: 'discount_1',
+      vendorId: 'vendor_1',
+      title: 'Happy Hour Special',
+      description: '20% off during happy hours',
+      type: 'happy_hour',
+      value: 20.0,
+      minOrderAmount: 200.0,
+      startDate: DateTime.now().subtract(const Duration(days: 30)),
+      endDate: DateTime.now().add(const Duration(days: 30)),
+      happyHourDays: [1, 2, 3, 4, 5], // Monday to Friday
+      happyHourStartTime: const TimeOfDay(hour: 14, minute: 0),
+      happyHourEndTime: const TimeOfDay(hour: 17, minute: 0),
+      happyHourDiscountRate: 20.0,
+      maxUsageCount: 100,
+      currentUsageCount: 45,
+      isActive: true,
+      createdAt: DateTime.now().subtract(const Duration(days: 30)),
+      updatedAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+    EnhancedDiscountModel(
+      discountId: 'discount_2',
+      vendorId: 'vendor_1',
+      title: 'Combo Deal',
+      description: 'Pizza + Drink combo',
+      type: 'combo',
+      value: 50.0,
+      minOrderAmount: 300.0,
+      requiredMenuItemIds: ['menu_1', 'menu_5'],
+      comboPrice: 350.0,
+      comboName: 'Pizza + Drink Combo',
+      maxUsageCount: 50,
+      currentUsageCount: 20,
+      isActive: true,
+      createdAt: DateTime.now().subtract(const Duration(days: 15)),
+      updatedAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+    EnhancedDiscountModel(
+      discountId: 'discount_3',
+      vendorId: 'vendor_1',
+      title: 'Wallet Wednesday',
+      description: '15% off when paying with wallet',
+      type: 'percentage',
+      value: 15.0,
+      minOrderAmount: 150.0,
+      startDate: DateTime.now().subtract(const Duration(days: 7)),
+      endDate: DateTime.now().add(const Duration(days: 30)),
+      walletOnly: true,
+      maxUsageCount: 200,
+      currentUsageCount: 75,
+      isActive: true,
+      createdAt: DateTime.now().subtract(const Duration(days: 7)),
+      updatedAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+    EnhancedDiscountModel(
+      discountId: 'discount_4',
+      vendorId: 'vendor_1',
+      title: 'Wallet Cashback',
+      description: '₹50 off on orders above ₹500 when paying with wallet',
+      type: 'fixed',
+      value: 50.0,
+      minOrderAmount: 500.0,
+      startDate: DateTime.now().subtract(const Duration(days: 3)),
+      endDate: DateTime.now().add(const Duration(days: 14)),
+      walletOnly: true,
+      maxUsageCount: 100,
+      currentUsageCount: 30,
+      isActive: true,
+      createdAt: DateTime.now().subtract(const Duration(days: 3)),
+      updatedAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+  ];
+
+  // Mock Pickup Slots
+  static final List<PickupSlotModel> pickupSlots = [
+    PickupSlotModel(
+      slotId: 'slot_1',
+      vendorId: 'vendor_1',
+      startTime: DateTime(2024, 1, 1, 11, 0),
+      endTime: DateTime(2024, 1, 1, 11, 30),
+      maxCapacity: 10,
+      currentBookings: 3,
+      preparationTime: 15,
+      isActive: true,
+    ),
+    PickupSlotModel(
+      slotId: 'slot_2',
+      vendorId: 'vendor_1',
+      startTime: DateTime(2024, 1, 1, 12, 0),
+      endTime: DateTime(2024, 1, 1, 12, 30),
+      maxCapacity: 10,
+      currentBookings: 7,
+      preparationTime: 15,
+      isActive: true,
+    ),
+    PickupSlotModel(
+      slotId: 'slot_3',
+      vendorId: 'vendor_2',
+      startTime: DateTime(2024, 1, 1, 13, 0),
+      endTime: DateTime(2024, 1, 1, 13, 30),
+      maxCapacity: 8,
+      currentBookings: 2,
+      preparationTime: 10,
+      isActive: true,
+    ),
+  ];
+
+  // Mock Sales Reports
+  static final List<SalesReportModel> salesReports = [
+    SalesReportModel(
+      reportId: 'report_1',
+      vendorId: 'vendor_1',
+      reportDate: DateTime.now().subtract(const Duration(days: 1)),
+      totalRevenue: 15000.0,
+      totalOrders: 45,
+      averageOrderValue: 333.33,
+      topSellingItems: [
+        SalesItemModel(
+          itemId: 'menu_1',
+          itemName: 'Margherita Pizza',
+          quantitySold: 15,
+          totalRevenue: 3750.0,
+          orderCount: 15,
+        ),
+        SalesItemModel(
+          itemId: 'menu_2',
+          itemName: 'Veggie Pizza',
+          quantitySold: 12,
+          totalRevenue: 3600.0,
+          orderCount: 12,
+        ),
+      ],
+      discountUsage: [
+        DiscountUsageModel(
+          discountId: 'discount_1',
+          discountTitle: 'Happy Hour Special',
+          usageCount: 20,
+          totalDiscountAmount: 2000.0,
+          revenueGenerated: 10000.0,
+        ),
+      ],
+      hourlySales: [
+        HourlySalesModel(hour: 11, orderCount: 8, revenue: 2666.67),
+        HourlySalesModel(hour: 12, orderCount: 15, revenue: 5000.0),
+        HourlySalesModel(hour: 13, orderCount: 12, revenue: 4000.0),
+      ],
+    ),
+    SalesReportModel(
+      reportId: 'report_2',
+      vendorId: 'vendor_2',
+      reportDate: DateTime.now().subtract(const Duration(days: 1)),
+      totalRevenue: 8500.0,
+      totalOrders: 30,
+      averageOrderValue: 283.33,
+      topSellingItems: [
+        SalesItemModel(
+          itemId: 'menu_3',
+          itemName: 'Veggie Burger',
+          quantitySold: 18,
+          totalRevenue: 2160.0,
+          orderCount: 18,
+        ),
+        SalesItemModel(
+          itemId: 'menu_4',
+          itemName: 'Paneer Burger',
+          quantitySold: 12,
+          totalRevenue: 1800.0,
+          orderCount: 12,
+        ),
+      ],
+      discountUsage: [],
+      hourlySales: [
+        HourlySalesModel(hour: 12, orderCount: 10, revenue: 2833.33),
+        HourlySalesModel(hour: 13, orderCount: 12, revenue: 3400.0),
+        HourlySalesModel(hour: 14, orderCount: 8, revenue: 2266.67),
+      ],
     ),
   ];
 
@@ -304,5 +491,360 @@ class MockDataSource {
 
   static List<TransactionModel> getTransactionsByUser(String userId) {
     return transactions.where((transaction) => transaction.userId == userId).toList();
+  }
+
+  // Enhanced Discount methods
+  static List<EnhancedDiscountModel> getEnhancedDiscountsByVendor(String vendorId) {
+    return enhancedDiscounts.where((discount) => discount.vendorId == vendorId).toList();
+  }
+
+  static EnhancedDiscountModel? getEnhancedDiscountById(String discountId) {
+    try {
+      return enhancedDiscounts.firstWhere((discount) => discount.discountId == discountId);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Pickup Slot methods
+  static List<PickupSlotModel> getPickupSlotsByVendor(String vendorId) {
+    return pickupSlots.where((slot) => slot.vendorId == vendorId).toList();
+  }
+
+  static PickupSlotModel? getPickupSlotById(String slotId) {
+    try {
+      return pickupSlots.firstWhere((slot) => slot.slotId == slotId);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Sales Report methods
+  static List<SalesReportModel> getSalesReportsByVendor(String vendorId) {
+    return salesReports.where((report) => report.vendorId == vendorId).toList();
+  }
+
+  static SalesReportModel? getSalesReportById(String reportId) {
+    try {
+      return salesReports.firstWhere((report) => report.reportId == reportId);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Additional sales report methods
+  static SalesReportModel getDailySalesReport(String vendorId, DateTime date) {
+    final vendorReports = getSalesReportsByVendor(vendorId);
+    final report = vendorReports.firstWhere(
+      (r) => r.reportDate.year == date.year && 
+             r.reportDate.month == date.month && 
+             r.reportDate.day == date.day,
+      orElse: () => _generateDailyReport(vendorId, date),
+    );
+    return report;
+  }
+
+  static SalesReportModel getWeeklySalesReport(String vendorId, DateTime weekStart) {
+    final weekEnd = weekStart.add(const Duration(days: 6));
+    final vendorReports = getSalesReportsByVendor(vendorId);
+    final weekReports = vendorReports.where(
+      (r) => r.reportDate.isAfter(weekStart.subtract(const Duration(days: 1))) && 
+             r.reportDate.isBefore(weekEnd.add(const Duration(days: 1))),
+    ).toList();
+    
+    if (weekReports.isEmpty) {
+      return _generateWeeklyReport(vendorId, weekStart);
+    }
+    
+    return _aggregateReports(weekReports, 'weekly_${vendorId}_${weekStart.millisecondsSinceEpoch}');
+  }
+
+  static SalesReportModel getMonthlySalesReport(String vendorId, DateTime month) {
+    final vendorReports = getSalesReportsByVendor(vendorId);
+    final monthReports = vendorReports.where(
+      (r) => r.reportDate.year == month.year && r.reportDate.month == month.month,
+    ).toList();
+    
+    if (monthReports.isEmpty) {
+      return _generateMonthlyReport(vendorId, month);
+    }
+    
+    return _aggregateReports(monthReports, 'monthly_${vendorId}_${month.year}_${month.month}');
+  }
+
+  static List<SalesReportModel> getSalesReportsByDateRange(
+    String vendorId,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
+    final vendorReports = getSalesReportsByVendor(vendorId);
+    return vendorReports.where(
+      (r) => r.reportDate.isAfter(startDate.subtract(const Duration(days: 1))) && 
+             r.reportDate.isBefore(endDate.add(const Duration(days: 1))),
+    ).toList();
+  }
+
+  static List<SalesItemModel> getTopSellingItems(
+    String vendorId,
+    DateTime startDate,
+    DateTime endDate,
+    int limit,
+  ) {
+    final reports = getSalesReportsByDateRange(vendorId, startDate, endDate);
+    final allItems = <String, SalesItemModel>{};
+    
+    for (final report in reports) {
+      for (final item in report.topSellingItems) {
+        if (allItems.containsKey(item.itemId)) {
+          final existing = allItems[item.itemId]!;
+          allItems[item.itemId] = SalesItemModel(
+            itemId: item.itemId,
+            itemName: item.itemName,
+            quantitySold: existing.quantitySold + item.quantitySold,
+            totalRevenue: existing.totalRevenue + item.totalRevenue,
+            orderCount: existing.orderCount + item.orderCount,
+          );
+        } else {
+          allItems[item.itemId] = item;
+        }
+      }
+    }
+    
+    final sortedItems = allItems.values.toList()
+      ..sort((a, b) => b.totalRevenue.compareTo(a.totalRevenue));
+    
+    return sortedItems.take(limit).toList();
+  }
+
+  static List<DiscountUsageModel> getDiscountUsage(
+    String vendorId,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
+    final reports = getSalesReportsByDateRange(vendorId, startDate, endDate);
+    final allUsage = <String, DiscountUsageModel>{};
+    
+    for (final report in reports) {
+      for (final usage in report.discountUsage) {
+        if (allUsage.containsKey(usage.discountId)) {
+          final existing = allUsage[usage.discountId]!;
+          allUsage[usage.discountId] = DiscountUsageModel(
+            discountId: usage.discountId,
+            discountTitle: usage.discountTitle,
+            usageCount: existing.usageCount + usage.usageCount,
+            totalDiscountAmount: existing.totalDiscountAmount + usage.totalDiscountAmount,
+            revenueGenerated: existing.revenueGenerated + usage.revenueGenerated,
+          );
+        } else {
+          allUsage[usage.discountId] = usage;
+        }
+      }
+    }
+    
+    return allUsage.values.toList();
+  }
+
+  static List<HourlySalesModel> getHourlySales(String vendorId, DateTime date) {
+    final report = getDailySalesReport(vendorId, date);
+    return report.hourlySales;
+  }
+
+  static Map<String, dynamic> getSalesSummary(String vendorId) {
+    final vendorReports = getSalesReportsByVendor(vendorId);
+    if (vendorReports.isEmpty) {
+      return {
+        'totalRevenue': 0.0,
+        'totalOrders': 0,
+        'averageOrderValue': 0.0,
+        'bestSellingItem': 'No data',
+        'peakHour': 12,
+        'mostUsedDiscount': 'No data',
+        'revenueGrowth': 0.0,
+      };
+    }
+    
+    final totalRevenue = vendorReports.fold(0.0, (sum, report) => sum + report.totalRevenue);
+    final totalOrders = vendorReports.fold(0, (sum, report) => sum + report.totalOrders);
+    final averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0.0;
+    
+    // Find best selling item
+    final allItems = <String, int>{};
+    for (final report in vendorReports) {
+      for (final item in report.topSellingItems) {
+        allItems[item.itemName] = (allItems[item.itemName] ?? 0) + item.quantitySold;
+      }
+    }
+    final bestSellingItem = allItems.entries.fold('', (best, entry) => 
+      entry.value > (allItems[best] ?? 0) ? entry.key : best);
+    
+    // Find peak hour
+    final hourlyData = <int, int>{};
+    for (final report in vendorReports) {
+      for (final hourly in report.hourlySales) {
+        hourlyData[hourly.hour] = (hourlyData[hourly.hour] ?? 0) + hourly.orderCount;
+      }
+    }
+    final peakHour = hourlyData.entries.fold(12, (peak, entry) => 
+      entry.value > (hourlyData[peak] ?? 0) ? entry.key : peak);
+    
+    return {
+      'totalRevenue': totalRevenue,
+      'totalOrders': totalOrders,
+      'averageOrderValue': averageOrderValue,
+      'bestSellingItem': bestSellingItem.isNotEmpty ? bestSellingItem : 'No data',
+      'peakHour': peakHour,
+      'mostUsedDiscount': 'Happy Hour Special', // Mock data
+      'revenueGrowth': 15.5, // Mock data
+    };
+  }
+
+  // Helper methods for generating mock reports
+  static SalesReportModel _generateDailyReport(String vendorId, DateTime date) {
+    return SalesReportModel(
+      reportId: 'daily_${vendorId}_${date.millisecondsSinceEpoch}',
+      vendorId: vendorId,
+      reportDate: date,
+      totalRevenue: 2500.0 + (date.day * 100),
+      totalOrders: 20 + (date.day % 10),
+      averageOrderValue: 125.0,
+      topSellingItems: [
+        SalesItemModel(
+          itemId: 'menu_1',
+          itemName: 'Margherita Pizza',
+          quantitySold: 15,
+          totalRevenue: 3750.0,
+          orderCount: 15,
+        ),
+        SalesItemModel(
+          itemId: 'menu_2',
+          itemName: 'Veggie Burger',
+          quantitySold: 12,
+          totalRevenue: 1440.0,
+          orderCount: 12,
+        ),
+      ],
+      discountUsage: [
+        DiscountUsageModel(
+          discountId: 'discount_1',
+          discountTitle: 'Happy Hour Special',
+          usageCount: 8,
+          totalDiscountAmount: 400.0,
+          revenueGenerated: 2000.0,
+        ),
+      ],
+      hourlySales: List.generate(24, (hour) => 
+        HourlySalesModel(
+          hour: hour,
+          orderCount: hour >= 11 && hour <= 14 ? 3 : 1,
+          revenue: hour >= 11 && hour <= 14 ? 375.0 : 125.0,
+        ),
+      ),
+    );
+  }
+
+  static SalesReportModel _generateWeeklyReport(String vendorId, DateTime weekStart) {
+    final reports = List.generate(7, (day) => 
+      _generateDailyReport(vendorId, weekStart.add(Duration(days: day))),
+    );
+    return _aggregateReports(reports, 'weekly_${vendorId}_${weekStart.millisecondsSinceEpoch}');
+  }
+
+  static SalesReportModel _generateMonthlyReport(String vendorId, DateTime month) {
+    final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
+    final reports = List.generate(daysInMonth, (day) => 
+      _generateDailyReport(vendorId, DateTime(month.year, month.month, day + 1)),
+    );
+    return _aggregateReports(reports, 'monthly_${vendorId}_${month.year}_${month.month}');
+  }
+
+  static SalesReportModel _aggregateReports(
+    List<SalesReportModel> reports,
+    String reportId,
+  ) {
+    if (reports.isEmpty) {
+      return SalesReportModel(
+        reportId: reportId,
+        vendorId: 'unknown',
+        reportDate: DateTime.now(),
+        totalRevenue: 0.0,
+        totalOrders: 0,
+        averageOrderValue: 0.0,
+        topSellingItems: [],
+        discountUsage: [],
+        hourlySales: [],
+      );
+    }
+    
+    final totalRevenue = reports.fold(0.0, (sum, report) => sum + report.totalRevenue);
+    final totalOrders = reports.fold(0, (sum, report) => sum + report.totalOrders);
+    final averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0.0;
+    
+    // Aggregate top selling items
+    final allItems = <String, SalesItemModel>{};
+    for (final report in reports) {
+      for (final item in report.topSellingItems) {
+        if (allItems.containsKey(item.itemId)) {
+          final existing = allItems[item.itemId]!;
+          allItems[item.itemId] = SalesItemModel(
+            itemId: item.itemId,
+            itemName: item.itemName,
+            quantitySold: existing.quantitySold + item.quantitySold,
+            totalRevenue: existing.totalRevenue + item.totalRevenue,
+            orderCount: existing.orderCount + item.orderCount,
+          );
+        } else {
+          allItems[item.itemId] = item;
+        }
+      }
+    }
+    
+    // Aggregate discount usage
+    final allUsage = <String, DiscountUsageModel>{};
+    for (final report in reports) {
+      for (final usage in report.discountUsage) {
+        if (allUsage.containsKey(usage.discountId)) {
+          final existing = allUsage[usage.discountId]!;
+          allUsage[usage.discountId] = DiscountUsageModel(
+            discountId: usage.discountId,
+            discountTitle: usage.discountTitle,
+            usageCount: existing.usageCount + usage.usageCount,
+            totalDiscountAmount: existing.totalDiscountAmount + usage.totalDiscountAmount,
+            revenueGenerated: existing.revenueGenerated + usage.revenueGenerated,
+          );
+        } else {
+          allUsage[usage.discountId] = usage;
+        }
+      }
+    }
+    
+    // Aggregate hourly sales
+    final hourlyData = <int, HourlySalesModel>{};
+    for (final report in reports) {
+      for (final hourly in report.hourlySales) {
+        if (hourlyData.containsKey(hourly.hour)) {
+          final existing = hourlyData[hourly.hour]!;
+          hourlyData[hourly.hour] = HourlySalesModel(
+            hour: hourly.hour,
+            orderCount: existing.orderCount + hourly.orderCount,
+            revenue: existing.revenue + hourly.revenue,
+          );
+        } else {
+          hourlyData[hourly.hour] = hourly;
+        }
+      }
+    }
+    
+    return SalesReportModel(
+      reportId: reportId,
+      vendorId: reports.first.vendorId,
+      reportDate: reports.first.reportDate,
+      totalRevenue: totalRevenue,
+      totalOrders: totalOrders,
+      averageOrderValue: averageOrderValue,
+      topSellingItems: allItems.values.toList()
+        ..sort((a, b) => b.totalRevenue.compareTo(a.totalRevenue)),
+      discountUsage: allUsage.values.toList(),
+      hourlySales: hourlyData.values.toList()..sort((a, b) => a.hour.compareTo(b.hour)),
+    );
   }
 }

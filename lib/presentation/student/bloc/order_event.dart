@@ -59,15 +59,17 @@ class PlaceOrder extends OrderEvent {
   final String userId;
   final DateTime pickupTime;
   final String? specialInstructions;
+  final String paymentMethod;
 
   const PlaceOrder({
     required this.userId,
     required this.pickupTime,
     this.specialInstructions,
+    this.paymentMethod = 'other',
   });
 
   @override
-  List<Object> get props => [userId, pickupTime, specialInstructions ?? ''];
+  List<Object> get props => [userId, pickupTime, specialInstructions ?? '', paymentMethod];
 }
 
 class LoadOrderHistory extends OrderEvent {
@@ -90,9 +92,13 @@ class GetOrderDetails extends OrderEvent {
 
 class CancelOrder extends OrderEvent {
   final String orderId;
+  final String? cancellationReason;
 
-  const CancelOrder({required this.orderId});
+  const CancelOrder({
+    required this.orderId,
+    this.cancellationReason,
+  });
 
   @override
-  List<Object> get props => [orderId];
+  List<Object> get props => [orderId, cancellationReason ?? ''];
 }
