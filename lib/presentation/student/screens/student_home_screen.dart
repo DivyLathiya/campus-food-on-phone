@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:campus_food_app/presentation/auth/bloc/auth_bloc.dart';
+import 'package:campus_food_app/domain/repositories/user_repository.dart';
 import 'package:campus_food_app/core/utils/app_theme.dart';
 
 class StudentHomeScreen extends StatelessWidget {
@@ -110,8 +111,16 @@ class StudentHomeScreen extends StatelessWidget {
                           icon: Icons.notifications,
                           title: 'Notifications',
                           subtitle: 'View updates',
-                          onTap: () {
-                            // TODO: Navigate to notifications
+                          onTap: () async {
+                            final userRepository = context.read<UserRepository>();
+                            final user = await userRepository.getUserById(state.userId);
+                            if (user != null) {
+                              Navigator.pushNamed(
+                                context,
+                                '/student/notifications',
+                                arguments: user,
+                              );
+                            }
                           },
                         ),
                       ],

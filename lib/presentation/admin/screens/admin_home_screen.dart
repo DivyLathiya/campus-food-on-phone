@@ -141,7 +141,16 @@ class AdminHomeScreen extends StatelessWidget {
                           title: 'Feedback',
                           subtitle: 'View user feedback',
                           onTap: () {
-                            // TODO: Navigate to discount management
+                            // TODO: Navigate to feedback management
+                          },
+                        ),
+                        _buildQuickActionCard(
+                          context,
+                          icon: Icons.notifications,
+                          title: 'Send Messages',
+                          subtitle: 'Send admin messages',
+                          onTap: () {
+                            Navigator.of(context).pushNamed('/admin/messages');
                           },
                         ),
                       ],

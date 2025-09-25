@@ -13,6 +13,7 @@ import 'package:campus_food_app/presentation/vendor/bloc/sales_report_bloc.dart'
 import 'package:campus_food_app/presentation/vendor/bloc/discount_bloc.dart';
 import 'package:campus_food_app/presentation/vendor/bloc/enhanced_discount_bloc.dart';
 import 'package:campus_food_app/presentation/vendor/bloc/pickup_slot_bloc.dart';
+import 'package:campus_food_app/presentation/admin/bloc/admin_message_bloc.dart';
 import 'package:campus_food_app/data/repositories/mock_vendor_repository.dart';
 import 'package:campus_food_app/data/repositories/mock_order_repository.dart';
 import 'package:campus_food_app/data/repositories/mock_menu_repository.dart';
@@ -21,6 +22,7 @@ import 'package:campus_food_app/data/repositories/mock_sales_report_repository.d
 import 'package:campus_food_app/data/repositories/mock_discount_repository.dart';
 import 'package:campus_food_app/data/repositories/mock_enhanced_discount_repository.dart';
 import 'package:campus_food_app/data/repositories/mock_pickup_slot_repository.dart';
+import 'package:campus_food_app/data/repositories/mock_notification_repository.dart';
 
 void main() {
   runApp(const MyApp());
@@ -60,6 +62,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider(
           create: (context) => MockPickupSlotRepository(),
         ),
+        RepositoryProvider(
+          create: (context) => MockNotificationRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -85,6 +90,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => WalletBloc(
               userRepository: context.read<MockUserRepository>(),
+              notificationRepository: context.read<MockNotificationRepository>(),
             ),
           ),
           BlocProvider(
@@ -92,6 +98,7 @@ class MyApp extends StatelessWidget {
               orderRepository: context.read<MockOrderRepository>(),
               userRepository: context.read<MockUserRepository>(),
               menuRepository: context.read<MockMenuRepository>(),
+              notificationRepository: context.read<MockNotificationRepository>(),
             ),
           ),
           BlocProvider(
@@ -107,6 +114,8 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => DiscountBloc(
               discountRepository: context.read<MockDiscountRepository>(),
+              notificationRepository: context.read<MockNotificationRepository>(),
+              userRepository: context.read<MockUserRepository>(),
             ),
           ),
           BlocProvider(
@@ -117,6 +126,12 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => PickupSlotBloc(
               pickupSlotRepository: context.read<MockPickupSlotRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => AdminMessageBloc(
+              notificationRepository: context.read<MockNotificationRepository>(),
+              userRepository: context.read<MockUserRepository>(),
             ),
           ),
         ],
