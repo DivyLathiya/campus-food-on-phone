@@ -149,37 +149,42 @@ class _AdminMessageViewState extends State<AdminMessageView> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: RadioListTile<bool>(
-                            title: const Text('Send to Individual User'),
-                            value: false,
-                            groupValue: _isBroadcast,
-                            onChanged: (value) {
-                              setState(() {
-                                _isBroadcast = value!;
-                                _selectedUserId = null;
-                                _selectedUserIds = [];
-                              });
-                            },
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 200,
+                            child: RadioListTile<bool>(
+                              title: const Text('Send to Individual User'),
+                              value: false,
+                              groupValue: _isBroadcast,
+                              onChanged: (value) {
+                                setState(() {
+                                  _isBroadcast = value!;
+                                  _selectedUserId = null;
+                                  _selectedUserIds = [];
+                                });
+                              },
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: RadioListTile<bool>(
-                            title: const Text('Broadcast to Multiple Users'),
-                            value: true,
-                            groupValue: _isBroadcast,
-                            onChanged: (value) {
-                              setState(() {
-                                _isBroadcast = value!;
-                                _selectedUserId = null;
-                                _selectedUserIds = [];
-                              });
-                            },
+                          SizedBox(
+                            width: 200,
+                            child: RadioListTile<bool>(
+                              title: const Text('Broadcast to Multiple Users'),
+                              value: true,
+                              groupValue: _isBroadcast,
+                              onChanged: (value) {
+                                setState(() {
+                                  _isBroadcast = value!;
+                                  _selectedUserId = null;
+                                  _selectedUserIds = [];
+                                });
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -321,32 +326,37 @@ class _AdminMessageViewState extends State<AdminMessageView> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Select Users',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                const Expanded(
+                  child: Text(
+                    'Select Users',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedUserIds = users.map((u) => u.userId).toList();
-                        });
-                      },
-                      child: const Text('Select All'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedUserIds = [];
-                        });
-                      },
-                      child: const Text('Clear All'),
-                    ),
-                  ],
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedUserIds = users.map((u) => u.userId).toList();
+                          });
+                        },
+                        child: const Text('Select All'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedUserIds = [];
+                          });
+                        },
+                        child: const Text('Clear All'),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
